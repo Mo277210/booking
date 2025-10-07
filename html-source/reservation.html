@@ -16,7 +16,7 @@
     <!-- DatePicker CSS -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
-
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
     <style>
         .my-footer {
             height: 5em;
@@ -27,8 +27,8 @@
             font-size: 80%;
         }
 
-        .redText {
-            color: red;
+        .notie-container {
+        box-shadow: none;
         }
     </style>
 </head>
@@ -122,7 +122,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
         crossorigin="anonymous"></script>
-
+ <script src="https://unpkg.com/notie"></script>
 <!-- DatePicker JS -->
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
 
@@ -148,8 +148,7 @@
 
     // Toggle text color
     document.getElementById("colorButton").addEventListener("click", function () {
-        let myEl = document.getElementById("myParagraph");
-        myEl.classList.toggle("redText");
+        notify("Button clicked!","warning");
     });
 
     // Date Range Picker
@@ -159,6 +158,35 @@
             format: "yyyy-mm-dd"
         });
     }
+
+    function notify(msg,msgType){
+        notie.alert({
+  type: msgType, // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
+  text: msg,
+     stay: false,   // خليه false علشان يختفي بعد وقت
+        time: 3,       // 3 ثواني
+        position: 'top' // ✅ يخلي التنبيه يظهر فوق
+})
+    }
+    
+//     function alertError(msg){
+//         notie.alert({
+//   type: "error", // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
+//   text: msg,
+//   stay: Boolean, // optional, default = false
+//   time: Number, // optional, default = 3, minimum = 1,
+//   position: String // optional, default = 'top', enum: ['top', 'bottom']
+// })
+//     }
+//         function alertWarning(msg){
+//         notie.alert({
+//   type: "warning", // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
+//   text: msg,
+//   stay: Boolean, // optional, default = false
+//   time: Number, // optional, default = 3, minimum = 1,
+//   position: String // optional, default = 'top', enum: ['top', 'bottom']
+// })
+//     }
 </script>
 
 </body>
