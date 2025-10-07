@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -7,15 +8,8 @@
 
     <title>My Nice Page</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          crossorigin="anonymous">
-
-    <!-- DatePicker CSS -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
     <style>
         .my-footer {
@@ -32,6 +26,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -64,9 +59,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="contact.html">Contact</a>
             </li>
+
         </ul>
     </div>
 </nav>
+
 
 <div class="container">
     <div class="row">
@@ -76,28 +73,35 @@
 
             <form action="reservation.html" method="post" novalidate class="needs-validation">
                 <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-
-          
-
-    <div class="form-row mt-3" id="reservation-dates-alt" data-range="true">
-    <div class="col">
-        <input required class="form-control" type="text" name="start" placeholder="Arival">
-    </div>
-    <div class="col">
-        <input required class="form-control" type="text" name="end" placeholder="Departure">
-    </div>
-</div>
-
+                <div class="row">
+                    <div class="col">
+                        <div class="row" id="reservation-dates">
+                            <div class="col-md-6">
+                                <label for="start_date">Starting Date</label>
+                                <input required class="form-control" type="date" name="start_date" id="start_date">
+                                <small id="startDateHelp" class="form-text text-muted">Enter your starting date in
+                                    YYYY-MM-DD format</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="end_date">Ending Date</label>
+                                <input required class="form-control" type="date" name="end_date" id="end_date">
+                                <small id="endDateHelp" class="form-text text-muted">Enter your ending date in
+                                    YYYY-MM-DD format</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <hr>
 
                 <button type="submit" class="btn btn-primary">Search Availability</button>
+
             </form>
         </div>
         <div class="col-md-3"></div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row">
         <div class="col">
             <p id="myParagraph">This is some text.</p>
             <p>
@@ -105,17 +109,26 @@
             </p>
         </div>
     </div>
+
 </div>
+
 
 <footer class="my-footer">
     <div class="row">
-        <div class="col">left</div>
-        <div class="col">center</div>
-        <div class="col">right</div>
+        <div class="col">
+            left
+        </div>
+
+        <div class="col">
+            center
+        </div>
+
+        <div class="col">
+            right
+        </div>
     </div>
 </footer>
 
-<!-- JS Libraries -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -123,19 +136,17 @@
         integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
         crossorigin="anonymous"></script>
 
-<!-- DatePicker JS -->
-<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
-
 <script>
     console.log("I am printing from javascript");
 
-    // Bootstrap form validation
-    (function () {
+    (function() {
         'use strict';
-        window.addEventListener('load', function () {
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
             let forms = document.getElementsByClassName('needs-validation');
-            Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
+            // Loop over them and prevent submission
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
                     if (form.checkValidity() === false) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -146,20 +157,17 @@
         }, false);
     })();
 
-    // Toggle text color
     document.getElementById("colorButton").addEventListener("click", function () {
         let myEl = document.getElementById("myParagraph");
-        myEl.classList.toggle("redText");
-    });
 
-    // Date Range Picker
-    const elemAlt = document.getElementById('reservation-dates-alt');
-    if (elemAlt) {
-        new DateRangePicker(elemAlt, {
-            format: "yyyy-mm-dd"
-        });
-    }
+        if (myEl.classList.contains("redText")) {
+            myEl.classList.remove("redText");
+        } else {
+            myEl.classList.add("redText");
+        }
+    })
 </script>
 
 </body>
+
 </html>
