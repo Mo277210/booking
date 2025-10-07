@@ -129,6 +129,7 @@
 
 <script>
     console.log("I am printing from javascript");
+    let attention = Prompt();
 
     // Bootstrap form validation
     (function () {
@@ -150,7 +151,8 @@
     // Toggle text color
     document.getElementById("colorButton").addEventListener("click", function () {
         // notify("Button clicked!","warning");
-        notifyModal("Button Clicked","You clicked the button!","success","Cool");
+        // notifyModal("Button Clicked","You clicked the button!","success","Cool");
+        attention.success();
     });
 
     // Date Range Picker
@@ -197,6 +199,22 @@
 //   position: String // optional, default = 'top', enum: ['top', 'bottom']
 // })
 //     }
+
+
+//Implementing a Javascript module(video)
+function Prompt(){
+
+    let toast =function(){
+        console.log("toast");
+}
+    let success =function(){
+        console.log("success");
+}
+return{
+    toast:toast,
+    success:success
+}
+}
 </script>
 
 </body>
