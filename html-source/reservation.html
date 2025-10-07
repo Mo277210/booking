@@ -125,6 +125,7 @@
  <script src="https://unpkg.com/notie"></script>
 <!-- DatePicker JS -->
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     console.log("I am printing from javascript");
@@ -148,7 +149,8 @@
 
     // Toggle text color
     document.getElementById("colorButton").addEventListener("click", function () {
-        notify("Button clicked!","warning");
+        // notify("Button clicked!","warning");
+        notifyModal("Button Clicked","You clicked the button!","success","Cool");
     });
 
     // Date Range Picker
@@ -166,6 +168,14 @@
      stay: false,   // خليه false علشان يختفي بعد وقت
         time: 3,       // 3 ثواني
         position: 'top' // ✅ يخلي التنبيه يظهر فوق
+})
+    }
+    function notifyModal(title,text,icon,confirmButtonText){
+                Swal.fire({
+  title: title,
+  text: text,
+  icon: icon,
+  confirmButtonText: confirmButtonText
 })
     }
     
