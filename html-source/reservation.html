@@ -30,6 +30,9 @@
         .notie-container {
         box-shadow: none;
         }
+        .datepicker{
+            z-index:10000;
+        }
     </style>
 </head>
 <body>
@@ -81,10 +84,10 @@
 
     <div class="form-row mt-3" id="reservation-dates-alt" data-range="true">
     <div class="col">
-        <input required class="form-control" type="text" name="start" placeholder="Arival">
+        <input disabled required class="form-control" type="text" name="start" placeholder="Arival">
     </div>
     <div class="col">
-        <input required class="form-control" type="text" name="end" placeholder="Departure">
+        <input disabled required class="form-control" type="text" name="end" placeholder="Departure">
     </div>
 </div>
 
@@ -148,12 +151,29 @@
         }, false);
     })();
 
-    // Toggle text color
-    document.getElementById("colorButton").addEventListener("click", function () {
-        // notify("Button clicked!","warning");
-        // notifyModal("Button Clicked","You clicked the button!","success","Cool");
-    attention.error({msg:"ooops"});
-    });
+  // Toggle text color
+document.getElementById("colorButton").addEventListener("click", function () {
+   let html = `
+    <form id="check-availability-form" method="post" action="" novalidate class="needs-validation">
+        <div class="form-row">
+            <div class="col">
+                <div class="form-row" id="reservation-dates-modal">
+                    <div class="col">
+                        <input id="start" required class="form-control" type="text" name="start" placeholder="Arrival">
+                    </div>
+                    <div class="col">
+                        <input id="end" required class="form-control" type="text" name="end" placeholder="Departure">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+`;
+
+    // notify("Button clicked!","warning");
+    // notifyModal("Button Clicked","You clicked the button!","success","Cool");
+    attention.custom({msg:html,title:"Check your dates"});
+});
 
     // Date Range Picker
     const elemAlt = document.getElementById('reservation-dates-alt');
@@ -242,12 +262,53 @@ function Prompt(){
             footer: footer
         });
     }
+async function custom(c){
+    const { msg="", title="" } = c;
+    const { value: formValues } = await Swal.fire({
+        title: title,
+        html: msg,
+        backdrop: false,
+        focusConfirm: false,
+        showCancelButton: true,
+        willOpen: () => {
+            const elem = document.getElementById('reservation-dates-modal');
+            new DateRangePicker(elem, {
+                format: "yyyy-mm-dd",
+                showOnFocus: true,
+                
+
+            });
+        },
+        preConfirm: () => {
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+
+            if (!start || !end) {
+                Swal.showValidationMessage("Please choose both start and end dates");
+                return false;
+            }
+
+            return [start, end];
+        },
+        didOpen: () => {
+            const start = document.getElementById('start');
+            const end = document.getElementById('end');
+            if(start) start.removeAttribute("disabled");
+            if(end) end.removeAttribute("disabled");
+        }
+    })
+    if (formValues) {
+        Swal.fire(JSON.stringify(formValues))
+    }
+}
+
 
     // ✅ هنا return واحد بس
     return {
         toast: toast,
         success: success,
-        error: error
+        error: error,
+         custom: custom ,
     }
 }
 
