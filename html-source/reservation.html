@@ -152,7 +152,7 @@
     document.getElementById("colorButton").addEventListener("click", function () {
         // notify("Button clicked!","warning");
         // notifyModal("Button Clicked","You clicked the button!","success","Cool");
-        attention.success();
+    attention.error({msg:"ooops"});
     });
 
     // Date Range Picker
@@ -204,17 +204,55 @@
 //Implementing a Javascript module(video)
 function Prompt(){
 
-    let toast =function(){
-        console.log("toast");
+    let toast = function(c){
+        const { msg="", icon="success", position="top-end" } = c;
+
+        const Toast = Swal.mixin({
+            toast: true,
+            title: msg,
+            icon: icon,
+            position: position,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        Toast.fire({});
+    }
+
+    let success = function(c){
+        const { msg="", title="", footer="" } = c;
+        Swal.fire({
+            icon: "success",
+            title: title,
+            text: msg,
+            footer: footer
+        });
+    }
+
+    let error = function(c){
+        const { msg="", title="", footer="" } = c;
+        Swal.fire({
+            icon: "error",
+            title: title,
+            text: msg,
+            footer: footer
+        });
+    }
+
+    // ✅ هنا return واحد بس
+    return {
+        toast: toast,
+        success: success,
+        error: error
+    }
 }
-    let success =function(){
-        console.log("success");
-}
-return{
-    toast:toast,
-    success:success
-}
-}
+
+
+  
 </script>
 
 </body>
