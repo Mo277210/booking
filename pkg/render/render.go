@@ -8,8 +8,10 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
-    "githup.com/Mo277210/booking/pkg/config"
-    "githup.com/Mo277210/booking/pkg/models"
+
+	"github.com/justinas/nosurf"
+	"githup.com/Mo277210/booking/pkg/config"
+	"githup.com/Mo277210/booking/pkg/models"
 )
 
 var funcMap = template.FuncMap{
@@ -27,7 +29,9 @@ func NewTemplates(a *config.AppConfig) {
 app=a
 }
 
-func AddDefault(td *models.TemplateData)*models.TemplateData{
+func AddDefault(td *models.TemplateData,r*http.Request)*models.TemplateData{
+td.CSRFToken=nosurf.Token(r)
+
 	return td
 }
 
@@ -36,7 +40,7 @@ func AddDefault(td *models.TemplateData)*models.TemplateData{
 // نسخة للتجارب السريعة (من غير كاش)
 //Optimizing our template cache by using an application config
 
-func RenderTemplate(w http.ResponseWriter, tmpl string,td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter,r*http.Request, tmpl string,td *models.TemplateData) {
 	// if we are using the template cache
 	var tc map[string]*template.Template
 
@@ -68,7 +72,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string,td *models.TemplateData) 
 	}
 	//render the template
 	buf := new(bytes.Buffer)
-	td =AddDefault(td)
+	td =AddDefault(td,r)
 	_=t.Execute(buf, td)
 
 	// ننفذ باستخدام "base" عشان القالب الأساسي يشتغل

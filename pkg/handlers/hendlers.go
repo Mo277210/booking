@@ -77,7 +77,7 @@ func (m *Respostory) Home(w http.ResponseWriter,r* http.Request){
 remoteIP:=r.RemoteAddr
 m.App.Session.Put(r.Context(),"remote_ip",remoteIP)
 
-	render.RenderTemplate(w,"home",&models.TemplateData{})
+	render.RenderTemplate(w,r,"home",&models.TemplateData{})
 }
 
 //about handler
@@ -90,7 +90,7 @@ func (m *Respostory) About(w http.ResponseWriter,r* http.Request){
 	remoteIP:=m.App.Session.GetString(r.Context(),"remote_ip")
    stringMap["remote_ip"]=remoteIP
 	//send the data to the template
-render.RenderTemplate(w,"about",&models.TemplateData{
+render.RenderTemplate(w,r,"about",&models.TemplateData{
 	StringMap: stringMap,
 })
 
@@ -98,30 +98,37 @@ render.RenderTemplate(w,"about",&models.TemplateData{
 
 // Reservation renders the make a reservation page and displays form
 func (m *Respostory) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "make-reservation", &models.TemplateData{})
+	render.RenderTemplate(w,r, "make-reservation", &models.TemplateData{})
 }
 
 // Generals renders the room page
 func (m *Respostory) Generals(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "generals", &models.TemplateData{})
+	render.RenderTemplate(w,r, "generals", &models.TemplateData{})
 }
 
 
 
 // Majors renders the room page
 func (m *Respostory) Majors(w http.ResponseWriter, r *http.Request) {
-    render.RenderTemplate(w, "majors", &models.TemplateData{})
+    render.RenderTemplate(w,r, "majors", &models.TemplateData{})
 }
 
 
 // Availability renders the search availability page
 func (m *Respostory) Availability(w http.ResponseWriter, r *http.Request) {
-    render.RenderTemplate(w, "search-availability", &models.TemplateData{})
+ render.RenderTemplate(w,r, "search-availability", &models.TemplateData{})
 }
+
+// PostAvailability handles the post request of search availability form
+func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
+  start:=r.Form.Get("start")
+  end:=r.Form.Get("end")
+  w.Write([]byte("start date is: "+start+" end date is: "+end))
+	}
 
 
 // Contact renders the contact page
 func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
-    render.RenderTemplate(w, "contacts", &models.TemplateData{})
+    render.RenderTemplate(w, r,"contacts", &models.TemplateData{})
 }
 
