@@ -23,9 +23,9 @@ import (
 	"net/http"
 	"time"
 
-	"githup.com/Mo277210/booking/pkg/config"
-	"githup.com/Mo277210/booking/pkg/handlers"
-	"githup.com/Mo277210/booking/pkg/render"
+	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/handlers"
+	"githup.com/Mo277210/booking/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
 

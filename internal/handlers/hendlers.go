@@ -42,9 +42,9 @@ import (
 
 	"net/http"
 
-	"githup.com/Mo277210/booking/pkg/config"
-	"githup.com/Mo277210/booking/pkg/models"
-	"githup.com/Mo277210/booking/pkg/render"
+	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/models"
+	"githup.com/Mo277210/booking/internal/render"
 )
 
 // في الـ Software Architecture (نمط Repository Pattern):

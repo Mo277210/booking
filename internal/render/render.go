@@ -10,8 +10,8 @@ import (
 	"text/template"
 
 	"github.com/justinas/nosurf"
-	"githup.com/Mo277210/booking/pkg/config"
-	"githup.com/Mo277210/booking/pkg/models"
+	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/models"
 )
 
 var funcMap = template.FuncMap{

@@ -70,8 +70,8 @@ package main
 import (
 	"net/http"
 
-	"githup.com/Mo277210/booking/pkg/config"
-	"githup.com/Mo277210/booking/pkg/handlers"
+	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/handlers"
 	// "github.com/bmizerany/pat"
 	"github.com/go-chi/chi"
     "github.com/go-chi/chi/middleware"
