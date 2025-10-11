@@ -1,4 +1,5 @@
 package handlers
+
 // // الـ Handler = الدالة (function) أو الكائن (struct) اللي مسؤول عن معالجة الطلب (Request) والرد على العميل (Response).
 
 // بمعنى آخر:
@@ -10,7 +11,7 @@ package handlers
 
 // Handler = الكود اللي ينفذ لما نزور العنوان ده.
 
-// تحب أديك مثال كامل صغير يجمع Route + Handler + Middleware عشان تبقى الصورة 100% 
+// تحب أديك مثال كامل صغير يجمع Route + Handler + Middleware عشان تبقى الصورة 100%
 //واضحة عندك؟
 //كلمة Handlers (هاندلرز) معناها: المعالجين أو الوظائف المسؤولة عن التعامل مع الطلبات (Requests) في السيرفر.
 
@@ -36,6 +37,8 @@ package handlers
 
 // غالبًا بتستخدم مع render.RenderTemplate عشان تعرض صفحات HTML.
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"githup.com/Mo277210/booking/pkg/config"
@@ -126,6 +129,23 @@ func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
   w.Write([]byte("start date is: "+start+" end date is: "+end))
 	}
 
+	type jsonResponse struct{
+		OK bool `json:"ok"`
+		Message string `json:"message"`
+	}
+// AvailabilityJSON handles request for availability and sends JSON response
+func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	repo:= jsonResponse{
+		OK:     false,
+		Message: "Available!",	}
+		out,error:=json.MarshalIndent(repo,"","     ")
+		if error!=nil{
+			log.Panicln(error)
+		}
+		log.Println(string(out))
+		w.Header().Set("Content-Type","application/json")
+		w.Write(out)
+	}
 
 // Contact renders the contact page
 func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
