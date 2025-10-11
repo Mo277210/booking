@@ -38,7 +38,7 @@ package handlers
 // غالبًا بتستخدم مع render.RenderTemplate عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
-	"log"
+	
 	"net/http"
 
 	"githup.com/Mo277210/booking/pkg/config"
@@ -135,20 +135,172 @@ func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	}
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	repo:= jsonResponse{
-		OK:     false,
-		Message: "Available!",	}
-		out,error:=json.MarshalIndent(repo,"","     ")
-		if error!=nil{
-			log.Panicln(error)
-		}
-		log.Println(string(out))
-		w.Header().Set("Content-Type","application/json")
-		w.Write(out)
+	response := jsonResponse{
+		OK:      false,
+		Message: "Available!",
 	}
+
+	out, err := json.MarshalIndent(response, "", "     ")
+	if err != nil {
+		http.Error(w, "Error creating JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(out)
+}
+
 
 // Contact renders the contact page
 func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
     render.RenderTemplate(w, r,"contacts", &models.TemplateData{})
 }
 
+// //ممتاز جدًا 🙌
+// أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
+// خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.
+
+// ---
+
+// ## 🧩 أولاً: ما هو الـ **Header** في HTTP؟
+
+// الـ **HTTP Header** هو جزء من الطلب (Request) أو الرد (Response) يُستخدم لإرسال **معلومات إضافية (Metadata)** بين العميل (المتصفح أو التطبيق) والسيرفر.
+
+// * الـ **Request Header** → يرسله المتصفح إلى السيرفر.
+// * الـ **Response Header** → يرسله السيرفر إلى المتصفح.
+
+// ---
+
+// ## 🎯 في Go — الهيدر بيتعامل معاه من خلال `http.ResponseWriter`
+
+// كل **Handler** في Go يأخذ:
+
+// ```go
+// func(w http.ResponseWriter, r *http.Request)
+// ```
+
+// * `w` = هو **الرد اللي هيرجعه السيرفر**.
+//   من خلاله بنكتب الـ **Header** و الـ **Body** (المحتوى نفسه).
+// * `r` = هو **الطلب اللي جاي من العميل**.
+
+// ---
+
+// ## 🧠 استخدام الـ Header في الكود
+
+// ### 1️⃣ لإرسال نوع المحتوى (Content-Type)
+
+// في الكود عندك مثلًا هنا:
+
+// ```go
+// w.Header().Set("Content-Type", "application/json")
+// ```
+
+// هذا السطر بيقول للمتصفح:
+
+// > "الرد اللي هتشوفه من السيرفر هو JSON، مش HTML أو نص عادي."
+
+// بدونه، المتصفح ممكن يعرض الـ JSON كـ **نص خام** بدون تلوين أو تفسير.
+
+// ---
+
+// ### 2️⃣ لإرجاع كود الحالة (Status Code)
+
+// ```go
+// w.WriteHeader(http.StatusOK)
+// ```
+
+// ده يرسل **كود الاستجابة** (زي 200 أو 404 أو 500).
+
+// | الكود | المعنى                               |
+// | ----- | ------------------------------------ |
+// | `200` | OK – الطلب ناجح                      |
+// | `400` | Bad Request – خطأ من العميل          |
+// | `401` | Unauthorized – غير مصرح              |
+// | `404` | Not Found – الصفحة غير موجودة        |
+// | `500` | Internal Server Error – خطأ بالسيرفر |
+
+// مثلاً لو حصل خطأ أثناء تكوين JSON:
+
+// ```go
+// http.Error(w, "Error generating JSON", http.StatusInternalServerError)
+// ```
+
+// ده بيرجع:
+
+// ```http
+// Status: 500 Internal Server Error
+// Content-Type: text/plain
+// ```
+
+// ---
+
+// ### 3️⃣ ممكن نضيف Headers مخصصة
+
+// مثلاً لو عايز تضيف معلومة إضافية للـ Response:
+
+// ```go
+// w.Header().Set("X-Powered-By", "GoLang-BookingApp")
+// ```
+
+// ده يضيف Header شكله كده في الرد:
+
+// ```http
+// X-Powered-By: GoLang-BookingApp
+// ```
+
+// ---
+
+// ## 📦 مثال عملي كامل (من كودك المعدل)
+
+// ```go
+// func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+//     response := jsonResponse{
+//         OK:      true,
+//         Message: "Available!",
+//     }
+
+//     // 👇 نعيّن نوع الرد (مهم جدًا)
+//     w.Header().Set("Content-Type", "application/json")
+
+//     // 👇 نعيّن كود النجاح
+//     w.WriteHeader(http.StatusOK)
+
+//     // 👇 نكتب JSON فعلاً
+//     out, err := json.MarshalIndent(response, "", "    ")
+//     if err != nil {
+//         http.Error(w, "Error creating JSON", http.StatusInternalServerError)
+//         return
+//     }
+
+//     w.Write(out)
+// }
+// ```
+
+// الرد من السيرفر يكون كده:
+
+// ```http
+// HTTP/1.1 200 OK
+// Content-Type: application/json
+// X-Powered-By: GoLang-BookingApp
+
+// {
+//     "ok": true,
+//     "message": "Available!"
+// }
+// ```
+
+// ---
+
+// ## 🧭 تلخيص سريع
+
+// | الوظيفة                                 | الهدف                                 | مثال                 |
+// | --------------------------------------- | ------------------------------------- | -------------------- |
+// | `w.Header().Set("Content-Type", "...")` | يحدد نوع المحتوى (HTML, JSON, نص...)  | `"application/json"` |
+// | `w.WriteHeader(statusCode)`             | يحدد كود الاستجابة (200, 404, 500...) | `http.StatusOK`      |
+// | `http.Error(w, "msg", code)`            | يرسل خطأ جاهز برمز الحالة             |                      |
+// | `w.Write([]byte("text"))`               | يكتب نص الرد (Body)                   | `"Hello!"`           |
+
+// ---
+
+// هل ترغب أن أشرح كمان **الفرق بين الهيدر في الطلب (Request Header)** والهيدر في الرد (Response Header)** مع مثال عملي باستخدام Postman أو المتصفح؟

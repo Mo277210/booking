@@ -74,6 +74,21 @@
         attention.custom({
             title: 'Choose your dates',
             msg: html,
+            callback:function(result){
+                console.log("callback");
+
+                fetch('/search-availability-json')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        console.log(data.ok);       // ✅ بدل O
+                        console.log(data.message);  // ✅ يعرض الرسالة
+
+                    })
+                  
+
+                
+            }
         });
     })
 </script>
