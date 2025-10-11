@@ -38,7 +38,8 @@ package handlers
 // غالبًا بتستخدم مع render.RenderTemplate عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
-	
+	"log"
+
 	"net/http"
 
 	"githup.com/Mo277210/booking/pkg/config"
@@ -135,20 +136,26 @@ func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	}
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	response := jsonResponse{
-		OK:      false,
-		Message: "Available!",
-	}
+    if r.Method != "POST" {
+        w.WriteHeader(http.StatusMethodNotAllowed)
+        return
+    }
 
-	out, err := json.MarshalIndent(response, "", "     ")
-	if err != nil {
-		http.Error(w, "Error creating JSON", http.StatusInternalServerError)
-		return
-	}
+    resp := struct {
+        OK      bool   `json:"ok"`
+        Message string `json:"message"`
+    }{
+        OK:      true,
+        Message: "Available!",
+    }
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(out)
+    out, err := json.Marshal(resp)
+    if err != nil {
+        log.Println(err)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(out)
 }
 
 

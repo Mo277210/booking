@@ -104,8 +104,7 @@ mux.Get("/make-reservation", handlers.Repo.Reservation)
 mux.Get("/majors-suite", handlers.Repo.Majors)
 mux.Get("/search-availability", http.HandlerFunc(handlers.Repo.Availability))
 mux.Post("/search-availability", http.HandlerFunc(handlers.Repo.PostAvailability))
-mux.Get("/search-availability-json", http.HandlerFunc(handlers.Repo.AvailabilityJSON))
-
+mux.Post("/search-availability-json", http.HandlerFunc(handlers.Repo.AvailabilityJSON))
 mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
 //Enabling static files
 fileServer:= http.FileServer(http.Dir("./static/"))
