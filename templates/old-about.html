@@ -1,0 +1,20 @@
+{{ define "content" }}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>About Us</h1>
+            <p>This is the about page of our web application.</p>
+            <p>This is the about page of our web application.</p>
+            <p>This came from the template : {{ index .StringMap "test" }}</p>
+            <p>
+         {{ if ne (index .StringMap "remote_ip") "" }}    
+    Your IP address is: {{ index .StringMap "remote_ip" }}
+{{ else }}
+    We don't know your IP address. Visit the home page first. 
+    <a href="/">Home</a>
+{{ end }}
+
+        </div>
+    </div>
+</div>
+{{ end }}

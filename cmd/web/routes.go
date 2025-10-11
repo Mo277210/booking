@@ -98,6 +98,11 @@ mux.Use(SessionLoad)
 
 mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
 mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
+mux.Get("/generals-quarters", http.HandlerFunc(handlers.Repo.Generals))
+mux.Get("/make-reservation", handlers.Repo.Reservation)
+mux.Get("/majors-suite", handlers.Repo.Majors)
+mux.Get("/search-availability", http.HandlerFunc(handlers.Repo.Availability))
+mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
 //Enabling static files
 fileServer:= http.FileServer(http.Dir("./static/"))
 mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

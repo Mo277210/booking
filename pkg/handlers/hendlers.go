@@ -96,4 +96,32 @@ render.RenderTemplate(w,"about",&models.TemplateData{
 
 }
 
+// Reservation renders the make a reservation page and displays form
+func (m *Respostory) Reservation(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "make-reservation", &models.TemplateData{})
+}
+
+// Generals renders the room page
+func (m *Respostory) Generals(w http.ResponseWriter, r *http.Request) {
+	render.RenderTemplate(w, "generals", &models.TemplateData{})
+}
+
+
+
+// Majors renders the room page
+func (m *Respostory) Majors(w http.ResponseWriter, r *http.Request) {
+    render.RenderTemplate(w, "majors", &models.TemplateData{})
+}
+
+
+// Availability renders the search availability page
+func (m *Respostory) Availability(w http.ResponseWriter, r *http.Request) {
+    render.RenderTemplate(w, "search-availability", &models.TemplateData{})
+}
+
+
+// Contact renders the contact page
+func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
+    render.RenderTemplate(w, "contacts", &models.TemplateData{})
+}
 
