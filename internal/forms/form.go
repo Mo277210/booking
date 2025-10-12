@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/asaskevich/govalidator"
 )
 
 // Form creates a custom form struct, embeds a url.Values object (from net/url package) and adds an Errors field to hold form validation errors.
@@ -56,3 +58,11 @@ if len(x) < length {
 return true
 }
 
+
+// IsEmail checks if a field in the form contains a valid email address. If not, an error message is added to the form errors.
+func (f *Form) IsEmail(field string)  {
+if !govalidator.IsEmail(f.Get(field)){
+	f.Errors.Add(field, "Invalid email address")
+}
+
+}
