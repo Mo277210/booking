@@ -152,6 +152,20 @@
                 confirmButtonText: confirmationButtonText
             })
         }
+       
+    {{with .Error}}
+    notify("{{. | js}}","error");
+    {{end}}
+
+    {{with .Flash}}
+    notify("{{. | js}}","success");
+    {{end}}
+
+    {{with .Warning}}
+    notify("{{. | js}}","warning");
+    {{end}}
+
+
 
         function Prompt() {
             let toast = function (c) {
