@@ -101,6 +101,8 @@ mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
 mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
 mux.Get("/generals-quarters", http.HandlerFunc(handlers.Repo.Generals))
 mux.Get("/make-reservation", handlers.Repo.Reservation)
+mux.Post("/make-reservation", handlers.Repo.PostReservation)
+
 mux.Get("/majors-suite", handlers.Repo.Majors)
 mux.Get("/search-availability", http.HandlerFunc(handlers.Repo.Availability))
 mux.Post("/search-availability", http.HandlerFunc(handlers.Repo.PostAvailability))

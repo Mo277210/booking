@@ -1,4 +1,7 @@
 package models
+
+import "githup.com/Mo277210/booking/internal/forms"
+
 // تمام 👌 الكود اللي كاتبه في `models/templateData.go` مظبوط جدًا.
 
 // خليني أوضحلك:
@@ -69,8 +72,6 @@ package models
 
 // تحب أديك مثال كمان إزاي تستفيد من **IntMap** أو **Data map** داخل التمبلت؟
 
-
-
 //TemplateData holds data sent from handlers to templates
 type TemplateData struct {
 	StringMap map[string]string
@@ -81,5 +82,5 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
-
+ 	Form     *forms.Form
 }

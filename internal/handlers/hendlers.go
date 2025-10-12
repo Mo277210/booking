@@ -43,6 +43,7 @@ import (
 	"net/http"
 
 	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/forms"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
@@ -102,8 +103,16 @@ render.RenderTemplate(w,r,"about",&models.TemplateData{
 
 // Reservation renders the make a reservation page and displays form
 func (m *Respostory) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w,r, "make-reservation", &models.TemplateData{})
+	render.RenderTemplate(w,r, "make-reservation", &models.TemplateData{
+        Form: forms.New(nil),
+    })
 }
+
+// PostReservation handles the posting of a reservation form
+func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
+
+}
+
 
 // Generals renders the room page
 func (m *Respostory) Generals(w http.ResponseWriter, r *http.Request) {
