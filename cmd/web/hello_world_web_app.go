@@ -19,6 +19,7 @@ package main
 //5th attempt code (Working with Layouts)
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -27,6 +28,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/handlers"
+	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
 
@@ -39,6 +41,8 @@ var app config.AppConfig
 // var errorLog *log.Logger
 // main function
 func main() {
+	//what am i going to put in the session
+   gob.Register(models.Reservation{})
 	//7-----------(Setting application wide configuration)------------------------------------------------
 	// change this to true when in production
 	app.InProduction = false

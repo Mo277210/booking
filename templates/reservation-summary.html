@@ -1,0 +1,36 @@
+{{ define "content" }}
+{{$re:= index .Data "reservation"}}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mt-5 text-center">Reservation Summary</h1>
+            <hr>
+
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="text-start"><strong>Name:</strong></td>
+                        <td>{{$re.FirstName}}{{$re.LastName}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start"><strong>Arrival:</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start"><strong>Departure:</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-start"><strong>Email:</strong></td>
+                        <td>{{$re.Email}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start"><strong>Phone:</strong></td>
+                        <td>{{$re.Phone}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ end }}

@@ -145,8 +145,11 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+    m.App.Session.Put(r.Context(), "reservation", reservation)
+    http.Redirect(w,r,"/reservation-summary",http.StatusSeeOther)
 //if we reach here means the form is valid so we can put the reservation in the session ويحمل الصحفة من تاني
-	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+	// http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 }
 
 
@@ -212,6 +215,27 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
     render.RenderTemplate(w, r,"contacts", &models.TemplateData{})
 }
+
+
+func (m *Respostory) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+    reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+    if !ok {
+        log.Println("cannot get item from session")
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    data := make(map[string]interface{})
+    data["reservation"] = reservation
+
+    m.App.Session.Remove(r.Context(), "reservation")
+
+    render.RenderTemplate(w, r, "reservation-summary", &models.TemplateData{
+        Data: data,
+    })
+}
+
+
 
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
