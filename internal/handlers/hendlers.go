@@ -227,6 +227,10 @@ func (m *Respostory) ReservationSummary(w http.ResponseWriter, r *http.Request) 
         http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
         return
     }
+    //remove reservation from session
+    // because we don't need it anymore
+    // and to avoid showing the same data again if user refresh the page
+    // or go back to the summary page again
     m.App.Session.Remove(r.Context(), "reservation")
 
     data := make(map[string]interface{})
