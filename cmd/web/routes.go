@@ -66,7 +66,6 @@ package main
 
 // تحب أشرحلك الفرق بين **routes** و **handlers** بحيث الصورة تكمل عندك؟
 
-
 import (
 	"net/http"
 
@@ -74,46 +73,41 @@ import (
 	"githup.com/Mo277210/booking/internal/handlers"
 	// "github.com/bmizerany/pat"
 	"github.com/go-chi/chi"
-    "github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/middleware"
 )
 
 func routes(app *config.AppConfig) http.Handler {
-	
-	
+
 	//Using chi for routing
 
-// 	mux := pat.New()
+	// 	mux := pat.New()
 
-// mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
-// mux.Get("/about", http.HandlerFunc(handlers.Repo.Home))
+	// mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
+	// mux.Get("/about", http.HandlerFunc(handlers.Repo.Home))
 
+	mux := chi.NewRouter()
 
-mux:=	chi.NewRouter()
+	mux.Use(middleware.Recoverer)
+	//Developing our own middleware
+	// mux.Use(WriteToConsole)
+	//Creating handlers for our forms & adding CSRF Protection
+	mux.Use(NoSurf)
+	mux.Use(SessionLoad)
 
-mux.Use(middleware.Recoverer)
-//Developing our own middleware
-// mux.Use(WriteToConsole)
-//Creating handlers for our forms & adding CSRF Protection
-mux.Use(NoSurf)
-mux.Use(SessionLoad)
+	mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
+	mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
+	mux.Get("/generals-quarters", http.HandlerFunc(handlers.Repo.Generals))
+	mux.Get("/make-reservation", handlers.Repo.Reservation)
+	mux.Post("/make-reservation", handlers.Repo.PostReservation)
 
-mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
-mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
-mux.Get("/generals-quarters", http.HandlerFunc(handlers.Repo.Generals))
-mux.Get("/make-reservation", handlers.Repo.Reservation)
-mux.Post("/make-reservation", handlers.Repo.PostReservation)
+	mux.Get("/majors-suite", handlers.Repo.Majors)
+	mux.Get("/search-availability", http.HandlerFunc(handlers.Repo.Availability))
+	mux.Post("/search-availability", http.HandlerFunc(handlers.Repo.PostAvailability))
+	mux.Post("/search-availability-json", http.HandlerFunc(handlers.Repo.AvailabilityJSON))
+	mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
+	//Enabling static files
+	fileServer := http.FileServer(http.Dir("./static/"))
+	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
-mux.Get("/majors-suite", handlers.Repo.Majors)
-mux.Get("/search-availability", http.HandlerFunc(handlers.Repo.Availability))
-mux.Post("/search-availability", http.HandlerFunc(handlers.Repo.PostAvailability))
-mux.Post("/search-availability-json", http.HandlerFunc(handlers.Repo.AvailabilityJSON))
-mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
-//Enabling static files
-fileServer:= http.FileServer(http.Dir("./static/"))
-mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
-
-return mux
+	return mux
 }
-
-
-

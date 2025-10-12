@@ -72,7 +72,7 @@ import "githup.com/Mo277210/booking/internal/forms"
 
 // تحب أديك مثال كمان إزاي تستفيد من **IntMap** أو **Data map** داخل التمبلت؟
 
-//TemplateData holds data sent from handlers to templates
+// TemplateData holds data sent from handlers to templates
 type TemplateData struct {
 	StringMap map[string]string
 	IntMap    map[string]int
@@ -82,5 +82,5 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
- 	Form     *forms.Form
+	Form      *forms.Form
 }

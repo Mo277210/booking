@@ -1,4 +1,5 @@
 package main
+
 //http://127.0.0.1:8085/about
 //go mod tidy  عشان لو زوت حاجة في go.mod
 //go mod init github.com/Mo2772/go_cors  عشان تعمل go mod init
@@ -23,14 +24,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/handlers"
 	"githup.com/Mo277210/booking/internal/render"
-	"github.com/alexedwards/scs/v2"
 )
 
 const portNumber = ":8085"
-	var app config.AppConfig
+
+var app config.AppConfig
+
 // var session *scs.SessionManager  // ❌ احذف ده، مش محتاجه
 // var infoLog *log.Logger
 // var errorLog *log.Logger
@@ -50,14 +53,10 @@ func main() {
 
 	app.Session = session
 
-
-
-
 	tc, err := render.CreateTemplateCache()
-if err != nil {
-    log.Fatal("cannot create template cache:", err)
-}
-
+	if err != nil {
+		log.Fatal("cannot create template cache:", err)
+	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
@@ -67,7 +66,7 @@ if err != nil {
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-    	
+
 	//Using pat for routing
 
 	// http.HandleFunc("/", handlers.Repo.Home)
@@ -76,14 +75,13 @@ if err != nil {
 	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
 	//Using pat for routing
 	// _ = http.ListenAndServe(portNumber, nil)
-	srv:= &http.Server{
-		Addr:portNumber,
-		Handler:routes(&app),
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
 	}
 	err = srv.ListenAndServe()
 	log.Fatal(err)
-	}
-
+}
 
 /////3 attempt code (Reorganizing our code, and adding some basic styling to pages)////////////////////////////////////////////////////////////////
 // package main

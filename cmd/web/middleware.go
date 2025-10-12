@@ -1,4 +1,5 @@
 package main
+
 //s4---Developing our own middleware
 //https://github.com/bmizerany/pat
 //https://github.com/go-chi/chi?tab=readme-ov-file
@@ -28,8 +29,8 @@ package main
 // ✅ التحكم في الـ Response (زي إضافة Headers).
 import (
 	"fmt"
-	"net/http"
 	"github.com/justinas/nosurf"
+	"net/http"
 )
 
 func WriteToConsole(next http.Handler) http.Handler {
@@ -39,22 +40,23 @@ func WriteToConsole(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-//NoSurf adds CSRF protection to all POST requests
+
+// NoSurf adds CSRF protection to all POST requests
 func NoSurf(next http.Handler) http.Handler {
 
-csrfHandler:=nosurf.New(next)
+	csrfHandler := nosurf.New(next)
 
-csrfHandler.SetBaseCookie(http.Cookie{
-	Name:"csrf_token",
-	HttpOnly:true,
-Path: "/",
-Secure: app.InProduction,
-SameSite: http.SameSiteLaxMode,
-})
-return csrfHandler
+	csrfHandler.SetBaseCookie(http.Cookie{
+		Name:     "csrf_token",
+		HttpOnly: true,
+		Path:     "/",
+		Secure:   app.InProduction,
+		SameSite: http.SameSiteLaxMode,
+	})
+	return csrfHandler
 }
 
-//SessionLoad loads and saves the session on every request
+// SessionLoad loads and saves the session on every request
 func SessionLoad(next http.Handler) http.Handler {
-    return app.Session.LoadAndSave(next)
+	return app.Session.LoadAndSave(next)
 }
