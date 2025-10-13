@@ -64,7 +64,9 @@ app = config.AppConfig{}
 	//Developing our own middleware
 	// mux.Use(WriteToConsole)
 	//Creating handlers for our forms & adding CSRF Protection
-	mux.Use(NoSurf)
+	
+	
+	// mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
 	mux.Get("/", http.HandlerFunc(Repo.Home))
