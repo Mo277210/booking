@@ -4,10 +4,13 @@ package render
 // في مجال الويب والتطبيقات، معناها: تحويل القالب (Template) + البيانات → لصفحة HTML تُرسل للمستخدم.
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
-	"text/template"
+	 "text/template"
+	
+
 
 	"github.com/justinas/nosurf"
 	"githup.com/Mo277210/booking/internal/config"
@@ -17,6 +20,7 @@ import (
 var funcMap = template.FuncMap{}
 
 var app *config.AppConfig
+var pathToTemplates = "./templates"
 
 // NewTemplates sets the config for the template package
 
@@ -109,7 +113,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	mycache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./templates/*.html")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.html", pathToTemplates))
 	if err != nil {
 		return mycache, err
 	}
@@ -126,7 +130,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return mycache, err
 		}
 
-		ts, err = ts.ParseFiles("./templates/base.html")
+		ts, err = ts.ParseFiles(fmt.Sprintf("%s/base.html", pathToTemplates))
 		if err != nil {
 			return mycache, err
 		}

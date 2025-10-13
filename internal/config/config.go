@@ -12,6 +12,7 @@ package config
 import (
 	"log"
 	"text/template"
+// "html/template"
 
 	"github.com/alexedwards/scs/v2"
 )

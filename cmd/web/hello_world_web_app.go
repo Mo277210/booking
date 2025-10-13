@@ -24,7 +24,7 @@ import (
 	"log"
 	"net/http"
 	"time"
-
+// "html/template"
 	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/handlers"
@@ -36,11 +36,26 @@ const portNumber = ":8085"
 
 var app config.AppConfig
 
-// var session *scs.SessionManager  // ❌ احذف ده، مش محتاجه
-// var infoLog *log.Logger
-// var errorLog *log.Logger
-// main function
+
 func main() {
+
+err:=run()
+if err!=nil{
+	log.Fatal(err)
+}
+
+
+	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
+
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+	err = srv.ListenAndServe()
+	log.Fatal(err)
+}
+
+func run() error{
 	//what am i going to put in the session
    gob.Register(models.Reservation{})
 	//7-----------(Setting application wide configuration)------------------------------------------------
@@ -60,6 +75,7 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
+	return err
 	}
 
 	app.TemplateCache = tc
@@ -71,154 +87,5 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	//Using pat for routing
-
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-
-	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
-	//Using pat for routing
-	// _ = http.ListenAndServe(portNumber, nil)
-	srv := &http.Server{
-		Addr:    portNumber,
-		Handler: routes(&app),
-	}
-	err = srv.ListenAndServe()
-	log.Fatal(err)
+	return nil
 }
-
-/////3 attempt code (Reorganizing our code, and adding some basic styling to pages)////////////////////////////////////////////////////////////////
-// package main
-
-// //second attempt code (Serving HTML Templates)
-// import (
-// 	"fmt"
-// 	"net/http"
-// 	"os"
-// 	"text/template"
-// )
-// const portNumber=":8080"
-
-// //home handler
-// func Home(w http.ResponseWriter,r* http.Request){
-// renderTemplate(w,"home")
-// }
-
-// //about handler
-
-// func About(w http.ResponseWriter,r* http.Request){
-// renderTemplate(w,"about")
-
-// }
-
-// func renderTemplate(w http.ResponseWriter, tmpl string) {
-//     path := "./html-templates/" + tmpl + ".html"
-//     if _, err := os.Stat(path); os.IsNotExist(err) {
-//         http.Error(w, "Template file not found: "+path, http.StatusInternalServerError)
-//         return
-//     }
-//     parsedTemplate, err := template.ParseFiles(path)
-//     if err != nil {
-//         http.Error(w, "Error parsing template: "+err.Error(), http.StatusInternalServerError)
-//         return
-//     }
-//     err = parsedTemplate.Execute(w, nil)
-//     if err != nil {
-//         http.Error(w, "Error rendering template", http.StatusInternalServerError)
-//         return
-//     }
-// }
-
-// //main function
-// func main() {
-
-// http.HandleFunc("/",Home)
-// http.HandleFunc("/about",About)
-// fmt.Println(fmt.Sprintf("starting web server at port %s",portNumber))
-// 	_=http.ListenAndServe(portNumber,nil)
-// }
-
-/////////////11111111111111111111111111111111111111111111111111111111//////////////////////////////////////////////////////////////////////
-//frist attempt code (hello world web app)
-
-////package main
-
-// import (
-// 	"fmt"
-// 	"net/http"
-// )
-
-// func main() {
-
-// 	http.HandleFunc("/",func(w http.ResponseWriter,r *http.Request){
-
-// 		n, err:=fmt.Fprintf(w,"Hello, World!")
-
-// 		if err!=nil {
-// 			fmt.Println("Error writing response:",err)
-// 			return
-// 		}
-
-// 		fmt.Println(fmt.Sprintf("n=%d, err=%v",n,err))
-
-// 	})
-
-// 	_=http.ListenAndServe(":8080",nil)
-// }
-
-////////////////////////22222222222222222222222222222222////////////////////////////////////////////////////////////////////////////////////////
-
-// package main
-
-// //second attempt code (Functions and handlers)
-// import (
-// 	"fmt"
-// 	"net/http"
-// )
-// const portNumber=":8080"
-
-// //home handler
-// func Home(w http.ResponseWriter,r* http.Request){
-// fmt.Fprintf(w,"this is home page")
-
-// }
-
-// //about handler
-
-// func About(w http.ResponseWriter,r* http.Request){
-// 	sum:=AddValue(5,10)
-// _,_= fmt.Fprintf(w,"the sum is %d\n",sum)
-
-// }
-// //function to add two values
-// func AddValue(x int,y int)int{
-// return x+y
-// }
-
-// func Divide(w http.ResponseWriter,r* http.Request){
-
-// 	f,err:=divideValues(100.0,0.0)
-// 	if err!=nil{
-// 		fmt.Fprintf(w,"Cannot divide by zero")
-// 		return
-// 	}
-// fmt.Fprintf(w,fmt.Sprintf("%f divided by %f is %f",100.0,0.0,f))
-// }
-// func divideValues(x,y float64)(float64,error){
-// 	if y<=0{
-// 		err:=fmt.Errorf("cannot divide by zero  ")
-// 		return 0,err
-// 	}
-// 	result:=x/y
-// 	return result,nil
-// }
-
-// //main function
-// func main() {
-
-// http.HandleFunc("/",Home)
-// http.HandleFunc("/about",About)
-// http.HandleFunc("/divide",Divide)
-// fmt.Println(fmt.Sprintf("starting web server at port %s",portNumber))
-// 	_=http.ListenAndServe(portNumber,nil)
-// }
