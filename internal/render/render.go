@@ -28,7 +28,7 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefault(td *models.TemplateData, r *http.Request) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Error = app.Session.PopString(r.Context(), "error")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
@@ -72,7 +72,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 	}
 	//render the template
 	buf := new(bytes.Buffer)
-	td = AddDefault(td, r)
+	td = AddDefaultData(td, r)
 	_ = t.Execute(buf, td)
 
 	// ننفذ باستخدام "base" عشان القالب الأساسي يشتغل
