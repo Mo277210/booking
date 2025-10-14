@@ -31,6 +31,27 @@ func TestMain(m *testing.M) {
       
 	testApp.Session = session
 	app=&testApp
-	
+
 	os.Exit(m.Run())
+}
+
+type myWriter struct{
+
+
+}
+
+func (tw *myWriter) Header() http.Header {
+	h := make(http.Header)
+	return h
+}
+
+
+func (tw *myWriter)WriteHeader(i int){
+
+
+}
+
+func (tw *myWriter)Write(b[]byte)(int ,error){
+	lenght:=len(b)
+	return lenght,nil
 }
