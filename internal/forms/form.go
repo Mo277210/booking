@@ -2,14 +2,12 @@ package forms
 
 import (
 	"fmt"
-	"net/http"
+	"github.com/asaskevich/govalidator"
 	"net/url"
 	"strings"
-
-	"github.com/asaskevich/govalidator"
 )
 
-// Form creates a custom form struct, embeds a url.Values object (from net/url package) and adds an Errors field to hold form validation errors.
+// Form creates a custom form struct and embeds a url.Values object
 type Form struct {
 	url.Values
 	Errors errors
@@ -20,14 +18,15 @@ func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
 }
 
-// New initializes a custom form struct
+// New initializes a form struct
 func New(data url.Values) *Form {
 	return &Form{
 		data,
 		errors(map[string][]string{}),
 	}
 }
-// Required checks that specific fields in the form are present and not empty. If any field is empty, an error message is added to the form errors.
+
+// Required checks for required fields
 func (f *Form) Required(fields ...string) {
 	for _, field := range fields {
 		value := f.Get(field)
@@ -37,32 +36,28 @@ func (f *Form) Required(fields ...string) {
 	}
 }
 
-// Has checks if a field is present in the form data
-func (f *Form) Has(field string, r *http.Request) bool {
-	x := r.Form.Get(field)
+// Has checks if form field is in post and not empty
+func (f *Form) Has(field string) bool {
+	x := f.Get(field)
 	if x == "" {
-		// f.Errors.Add(field, "This field cannot be blank")
 		return false
 	}
 	return true
-
-}
-// MinLength checks if a field in the form has a minimum length. If not, an error message is added to the form errors.
-
-func (f *Form) MinLength(field string, length int , r *http.Request) bool {
-	x := r.Form.Get(field)
-if len(x) < length {
-	f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
-	return false
-}
-return true
 }
 
-
-// IsEmail checks if a field in the form contains a valid email address. If not, an error message is added to the form errors.
-func (f *Form) IsEmail(field string)  {
-if !govalidator.IsEmail(f.Get(field)){
-	f.Errors.Add(field, "Invalid email address")
+// MinLength check for minimum length
+func (f *Form) MinLength(field string, length int) bool {
+	x := f.Get(field)
+	if len(x) < length {
+		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
+		return false
+	}
+	return true
 }
 
+// IsEmail checks for a valid email address
+func (f *Form) IsEmail(field string) {
+	if !govalidator.IsEmail(f.Get(field)) {
+		f.Errors.Add(field, "Invalid email address")
+	}
 }
