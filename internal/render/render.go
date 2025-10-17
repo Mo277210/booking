@@ -21,6 +21,7 @@ var pathToTemplates = "./templates"
 
 
 
+
 func NewTemplates(a *config.AppConfig) {
 	app = a
 }
@@ -36,42 +37,43 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 }
 
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error{
-	
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
+
 	var tc map[string]*template.Template
 
 	if app.UseCache {
-	
 		tc = app.TemplateCache
 	} else {
-
 		tc, _ = CreateTemplateCache()
-
 	}
-
 
 	t, ok := tc[tmpl]
 	if !ok {
-		return errors.New(	"canot get template from cache!")
+		return errors.New("cannot get template from cache!")
 	}
+
 	buf := new(bytes.Buffer)
 	td = AddDefaultData(td, r)
-	_ = t.Execute(buf, td)
 
+	// ✅ تنفيذ القالب الأساسي "base"
 	err := t.ExecuteTemplate(buf, "base", td)
-
 	if err != nil {
-		log.Println(err)
-	}
-
-	_, err = buf.WriteTo(w)
-	if err != nil {
-		log.Println("errr writing template to borwser",err)
+		log.Println("Error executing template:", err)
+		http.Error(w, "Internal Server Error", 500)
 		return err
 	}
+
+	// ✅ كتابة المحتوى للمتصفح
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		log.Println("Error writing template to browser:", err)
+		http.Error(w, "Internal Server Error", 500)
+		return err
+	}
+
 	return nil
-	
 }
+
 
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	mycache := map[string]*template.Template{}
@@ -82,6 +84,8 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 	pages, err := filepath.Glob(fmt.Sprintf("%s/*.html", pathToTemplates))
 	if err != nil {
+		log.Println("📂 Looking for templates in:", pathToTemplates)
+
 		return mycache, err
 	}
 
