@@ -38,12 +38,12 @@ package handlers
 // غالبًا بتستخدم مع render.RenderTemplate عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
-	"log"
 
 	"net/http"
 
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/forms"
+	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
@@ -79,8 +79,6 @@ func NewHandlers(r *Respostory) {
 
 //home handler
 func (m *Respostory) Home(w http.ResponseWriter,r* http.Request){
-remoteIP:=r.RemoteAddr
-m.App.Session.Put(r.Context(),"remote_ip",remoteIP)
 
 	render.RenderTemplate(w,r,"home",&models.TemplateData{})
 }
@@ -88,16 +86,10 @@ m.App.Session.Put(r.Context(),"remote_ip",remoteIP)
 //about handler
 
 func (m *Respostory) About(w http.ResponseWriter,r* http.Request){
-	//perform some logic
-	stringMap:=make(map[string]string)
-    stringMap["test"]="Hello, again. This is the about page"
-  //Experimenting with sessions(video)
-	remoteIP:=m.App.Session.GetString(r.Context(),"remote_ip")
-   stringMap["remote_ip"]=remoteIP
+
+	
 	//send the data to the template
-render.RenderTemplate(w,r,"about",&models.TemplateData{
-	StringMap: stringMap,
-})
+render.RenderTemplate(w,r,"about",&models.TemplateData{})
 
 }
 
@@ -117,7 +109,7 @@ func (m *Respostory) Reservation(w http.ResponseWriter, r *http.Request) {
 func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w,err)
 		return
 	}
 
@@ -203,7 +195,8 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
     out, err := json.Marshal(resp)
     if err != nil {
-        log.Println(err)
+        helpers.ServerError(w,err)
+        return
     }
 
     w.Header().Set("Content-Type", "application/json")
@@ -221,7 +214,7 @@ func (m *Respostory) ReservationSummary(w http.ResponseWriter, r *http.Request) 
    
     reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
     if !ok {
-        log.Println("cannot get item from session")
+       m.App.ErrorLog.Println("canot get error from session")
         m.App.Session.Put(r.Context(), "error", "can't get reservation from session")
        
         http.Redirect(w, r, "/", http.StatusTemporaryRedirect)

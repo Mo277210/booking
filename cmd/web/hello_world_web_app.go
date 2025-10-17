@@ -23,11 +23,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
-// "html/template"
+
+	// "html/template"
 	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/handlers"
+	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
@@ -35,7 +38,8 @@ import (
 const portNumber = ":8085"
 
 var app config.AppConfig
-
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
 
@@ -56,13 +60,15 @@ if err!=nil{
 }
 
 func run() error{
-	//what am i going to put in the session
+
    gob.Register(models.Reservation{})
-	//7-----------(Setting application wide configuration)------------------------------------------------
-	// change this to true when in production
+
 	app.InProduction = false
-	//---------------------------------------------------------------------------------------------
-	//8-----------(Setting up a custom logger)------------------------------------------------
+	infoLog= log.New(os.Stdout,"INFP\t",log.Ldate|log.Ltime)
+	app.InfoLog=infoLog
+
+	errorLog=log.New(os.Stdout,"ERROR\t",log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog=errorLog
 
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -86,6 +92,6 @@ func run() error{
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-
+	helpers.NewHelpers(&app)
 	return nil
 }
