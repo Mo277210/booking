@@ -23,11 +23,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
-// "html/template"
+
+	// "html/template"
 	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/handlers"
+	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
@@ -35,15 +38,15 @@ import (
 const portNumber = ":8085"
 
 var app config.AppConfig
-
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
 
-err:=run()
-if err!=nil{
-	log.Fatal(err)
-}
-
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
 
@@ -55,14 +58,16 @@ if err!=nil{
 	log.Fatal(err)
 }
 
-func run() error{
-	//what am i going to put in the session
-   gob.Register(models.Reservation{})
-	//7-----------(Setting application wide configuration)------------------------------------------------
-	// change this to true when in production
+func run() error {
+
+	gob.Register(models.Reservation{})
+
 	app.InProduction = false
-	//---------------------------------------------------------------------------------------------
-	//8-----------(Setting up a custom logger)------------------------------------------------
+	infoLog = log.New(os.Stdout, "INFP\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -75,7 +80,7 @@ func run() error{
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
-	return err
+		return err
 	}
 
 	app.TemplateCache = tc
@@ -86,6 +91,6 @@ func run() error{
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-
+	helpers.NewHelpers(&app)
 	return nil
 }
