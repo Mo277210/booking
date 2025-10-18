@@ -22,7 +22,7 @@ http.Error(w ,http.StatusText(status),status)
 }
 
 func ServerError(w http.ResponseWriter,err error){
-trace:=fmt.Sprint("%s\n%s",err.Error(),debug.Stack())
+trace:=fmt.Sprintf("%s\n%s",err.Error(),debug.Stack())
 app.ErrorLog.Panicln(trace)
 http.Error(w,http.StatusText(http.StatusInternalServerError),http.StatusInternalServerError)
 	
