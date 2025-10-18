@@ -43,11 +43,10 @@ var errorLog *log.Logger
 
 func main() {
 
-err:=run()
-if err!=nil{
-	log.Fatal(err)
-}
-
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
 
@@ -59,16 +58,16 @@ if err!=nil{
 	log.Fatal(err)
 }
 
-func run() error{
+func run() error {
 
-   gob.Register(models.Reservation{})
+	gob.Register(models.Reservation{})
 
 	app.InProduction = false
-	infoLog= log.New(os.Stdout,"INFP\t",log.Ldate|log.Ltime)
-	app.InfoLog=infoLog
+	infoLog = log.New(os.Stdout, "INFP\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
 
-	errorLog=log.New(os.Stdout,"ERROR\t",log.Ldate|log.Ltime|log.Lshortfile)
-	app.ErrorLog=errorLog
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -81,7 +80,7 @@ func run() error{
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
-	return err
+		return err
 	}
 
 	app.TemplateCache = tc
