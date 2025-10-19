@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict uYWjC08oYRtLokmA694lYqH6tMyMUUBOSyO4Rmpdt6CbvNdhJ6IeZbWvjVhlL6A
+\restrict 9EmraixwLGmbqdkexJ8zeaWEh78FT3oCi2gRaTSaG43ZWtdo99S6rDASR15Twqk
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -306,10 +306,38 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: room_restrictions_reservations_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX room_restrictions_reservations_id_idx ON public.room_restrictions USING btree (reservations_id);
+
+
+--
+-- Name: room_restrictions_room_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX room_restrictions_room_id_idx ON public.room_restrictions USING btree (room_id);
+
+
+--
+-- Name: room_restrictions_start_date_end_date_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX room_restrictions_start_date_end_date_idx ON public.room_restrictions USING btree (start_date, end_date);
+
+
+--
 -- Name: schema_migration_version_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE UNIQUE INDEX schema_migration_version_idx ON public.schema_migration USING btree (version);
+
+
+--
+-- Name: users_email_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX users_email_idx ON public.users USING btree (email);
 
 
 --
@@ -340,5 +368,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict uYWjC08oYRtLokmA694lYqH6tMyMUUBOSyO4Rmpdt6CbvNdhJ6IeZbWvjVhlL6A
+\unrestrict 9EmraixwLGmbqdkexJ8zeaWEh78FT3oCi2gRaTSaG43ZWtdo99S6rDASR15Twqk
 
