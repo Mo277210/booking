@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 9EmraixwLGmbqdkexJ8zeaWEh78FT3oCi2gRaTSaG43ZWtdo99S6rDASR15Twqk
+\restrict Uxh91q1WBeyuqI7R49mOWu7fLgxeAdv17nsloOLYuHVUz6GczErm0aUx9K4VlEo
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -306,6 +306,20 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: reservations_email_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX reservations_email_idx ON public.reservations USING btree (email);
+
+
+--
+-- Name: reservations_last_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX reservations_last_name_idx ON public.reservations USING btree (last_name);
+
+
+--
 -- Name: room_restrictions_reservations_id_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -349,6 +363,14 @@ ALTER TABLE ONLY public.reservations
 
 
 --
+-- Name: room_restrictions room_restrictions_reservations_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.room_restrictions
+    ADD CONSTRAINT room_restrictions_reservations_id_fk FOREIGN KEY (reservations_id) REFERENCES public.reservations(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: room_restrictions room_restrictions_restrictions_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -368,5 +390,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 9EmraixwLGmbqdkexJ8zeaWEh78FT3oCi2gRaTSaG43ZWtdo99S6rDASR15Twqk
+\unrestrict Uxh91q1WBeyuqI7R49mOWu7fLgxeAdv17nsloOLYuHVUz6GczErm0aUx9K4VlEo
 
