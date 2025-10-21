@@ -18,6 +18,7 @@ import (
 	"github.com/justinas/nosurf"
 
 	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/driver"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
 )
@@ -58,8 +59,11 @@ app = config.AppConfig{}
 	app.TemplateCache = tc
 	app.UseCache = true
 	//---------------------------------------------------------------------------------------------
-
-	repo := NewRepo(&app)
+db, err := driver.ConnectSQL("host=localhost port=5432 dbname=booking user=postgres password=1234")
+if err != nil {
+    log.Fatal("cannot connect to DB")
+}
+	repo := NewRepo(&app,db)
 	NewHandlers(repo)
 
 	render.NewTemplates(&app)

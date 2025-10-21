@@ -19,6 +19,7 @@ package main
 //5th attempt code (Working with Layouts)
 
 import (
+	// "database/sql"
 	"encoding/gob"
 	"fmt"
 	"log"
@@ -33,6 +34,7 @@ import (
 	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
+	"githup.com/Mo277210/booking/internal/driver"
 )
 
 const portNumber = ":8085"
@@ -43,10 +45,13 @@ var errorLog *log.Logger
 
 func main() {
 
-	err := run()
+	db,err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
 
@@ -58,7 +63,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB,error) {
 
 	gob.Register(models.Reservation{})
 
@@ -76,21 +81,32 @@ func run() error {
 	session.Cookie.Secure = app.InProduction
 
 	app.Session = session
+	
+	//connection to the database
+	log.Println("connecting to the database...")
+	db, err :=driver.ConnectSQL("host=localhost port=5432 dbname=booking user=postgres password=1234")	
+	if err !=nil{
+		log.Fatal("can not connect to Dying")
+	}
+log.Println("connected to database")
 
-	tc, err := render.CreateTemplateCache()
+	
+
+tc, err := render.CreateTemplateCache()
+
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
-		return err
+		return nil,err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 	//---------------------------------------------------------------------------------------------
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app,db)
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
-	return nil
+	return db, nil
 }

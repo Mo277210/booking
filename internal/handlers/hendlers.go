@@ -42,10 +42,13 @@ import (
 	"net/http"
 
 	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/driver"
 	"githup.com/Mo277210/booking/internal/forms"
 	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
+	"githup.com/Mo277210/booking/internal/repostiory"
+	"githup.com/Mo277210/booking/internal/repostiory/dbrepo"
 )
 
 // في الـ Software Architecture (نمط Repository Pattern):
@@ -63,12 +66,14 @@ var Repo *Respostory
 //Respostory is the repository type
 type Respostory struct{
 	App *config.AppConfig
+    DB repostiory.DatabaseRepo
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Respostory {
+func NewRepo(a *config.AppConfig,db *driver.DB) *Respostory {
 	return &Respostory{
 		App: a,
+        DB: dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
