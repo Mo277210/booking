@@ -66,7 +66,7 @@ if err != nil {
 	repo := NewRepo(&app,db)
 	NewHandlers(repo)
 
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	
 	mux := chi.NewRouter()
 

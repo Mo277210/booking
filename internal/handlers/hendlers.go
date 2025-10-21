@@ -35,7 +35,7 @@ package handlers
 
 // وظيفتها: تحدد إيه اللي يحصل لما المستخدم يزور URL معين (ترجع HTML, JSON, أو أي Response).
 
-// غالبًا بتستخدم مع render.RenderTemplate عشان تعرض صفحات HTML.
+// غالبًا بتستخدم مع render.Template عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
 
@@ -85,7 +85,7 @@ func NewHandlers(r *Respostory) {
 //home handler
 func (m *Respostory) Home(w http.ResponseWriter,r* http.Request){
 
-	render.RenderTemplate(w,r,"home",&models.TemplateData{})
+	render.Template(w,r,"home",&models.TemplateData{})
 }
 
 //about handler
@@ -94,7 +94,7 @@ func (m *Respostory) About(w http.ResponseWriter,r* http.Request){
 
 	
 	//send the data to the template
-render.RenderTemplate(w,r,"about",&models.TemplateData{})
+render.Template(w,r,"about",&models.TemplateData{})
 
 }
 
@@ -104,7 +104,7 @@ func (m *Respostory) Reservation(w http.ResponseWriter, r *http.Request) {
     data := make(map[string]interface{})
     data["reservation"] = emptyReservation
 
-    render.RenderTemplate(w,r, "make-reservation", &models.TemplateData{
+    render.Template(w,r, "make-reservation", &models.TemplateData{
         Form: forms.New(nil),
         Data: data,
     })
@@ -136,7 +136,7 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 		data := make(map[string]interface{})
 		data["reservation"] = reservation
 
-		render.RenderTemplate(w, r, "make-reservation", &models.TemplateData{
+		render.Template(w, r, "make-reservation", &models.TemplateData{
 			Form: form,
 			Data: data,
 		})
@@ -156,20 +156,20 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 // Generals renders the room page
 func (m *Respostory) Generals(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w,r, "generals", &models.TemplateData{})
+	render.Template(w,r, "generals", &models.TemplateData{})
 }
 
 
 
 // Majors renders the room page
 func (m *Respostory) Majors(w http.ResponseWriter, r *http.Request) {
-    render.RenderTemplate(w,r, "majors", &models.TemplateData{})
+    render.Template(w,r, "majors", &models.TemplateData{})
 }
 
 
 // Availability renders the search availability page
 func (m *Respostory) Availability(w http.ResponseWriter, r *http.Request) {
- render.RenderTemplate(w,r, "search-availability", &models.TemplateData{})
+ render.Template(w,r, "search-availability", &models.TemplateData{})
 }
 
 // PostAvailability handles the post request of search availability form
@@ -211,7 +211,7 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 // Contact renders the contact page
 func (m *Respostory) Contact(w http.ResponseWriter, r *http.Request) {
-    render.RenderTemplate(w, r,"contacts", &models.TemplateData{})
+    render.Template(w, r,"contacts", &models.TemplateData{})
 }
 
 
@@ -236,7 +236,7 @@ func (m *Respostory) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 
     m.App.Session.Remove(r.Context(), "reservation")
 
-    render.RenderTemplate(w, r, "reservation-summary", &models.TemplateData{
+    render.Template(w, r, "reservation-summary", &models.TemplateData{
         Data: data,
     })
 }

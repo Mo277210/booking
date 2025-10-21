@@ -28,7 +28,7 @@ func TestAddDefaultData(t *testing.T) {
 		t.Error("failed: expected flash value '123' not found in session")
 	}
 }
-func TestRenderTemplate(t *testing.T){
+func TestTemplate(t *testing.T){
 pathToTemplates = "../../templates"
 
 tc,err:=CreateTemplateCache()
@@ -47,13 +47,13 @@ if err!=nil{
 var ww myWriter
 
 	// ✅ اختبار Template موجود
-RenderTemplate(&ww, r, "home.html", &models.TemplateData{})
+Template(&ww, r, "home.html", &models.TemplateData{})
 	if err != nil {
 		t.Error("Error writing template to browser:", err)
 	}
 
 	// ✅ اختبار Template غير موجود — المفروض يُرجع خطأ
-	err = RenderTemplate(&ww, r, "non-existing.html", &models.TemplateData{})
+	err = Template(&ww, r, "non-existing.html", &models.TemplateData{})
 	if err == nil {
 		t.Error("Expected error for non-existing template, but got none")
 	}
@@ -73,7 +73,7 @@ func getSession() (*http.Request, error) {
     return r, nil
 }
 func TestNewlates(t *testing.T){
-	NewTemplates(app)
+	NewRenderer(app)
 }
 
 
