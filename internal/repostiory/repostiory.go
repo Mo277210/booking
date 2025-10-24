@@ -1,6 +1,9 @@
 package repostiory
 
+import "githup.com/Mo277210/booking/internal/models"
 
 type DatabaseRepo interface {
-  AllUsers() bool 
+	AllUsers() bool
+
+	InsertReservation(res models.Reservation)error
 }
