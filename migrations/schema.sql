@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Uxh91q1WBeyuqI7R49mOWu7fLgxeAdv17nsloOLYuHVUz6GczErm0aUx9K4VlEo
+\restrict mMA0v3gKejAPxVoiFMpdv6X6dIcbKn3DNnfgh0biPDKbBLrmvOwKYcGkiX0cZEu
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -33,7 +33,6 @@ CREATE TABLE public.reservations (
     last_name character varying(255) DEFAULT ''::character varying NOT NULL,
     email character varying(255),
     phone character varying(255) DEFAULT ''::character varying NOT NULL,
-    password character varying(60) NOT NULL,
     start_date date NOT NULL,
     end_date date NOT NULL,
     room_id integer,
@@ -74,7 +73,7 @@ CREATE TABLE public.restrictions (
     id integer NOT NULL,
     restrictions_name character varying(255) DEFAULT ''::character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    update_at timestamp without time zone CONSTRAINT restrictions_updated_at_not_null NOT NULL
 );
 
 
@@ -108,11 +107,10 @@ ALTER SEQUENCE public.restrictions_id_seq OWNED BY public.restrictions.id;
 
 CREATE TABLE public.room_restrictions (
     id integer NOT NULL,
-    password character varying(60) NOT NULL,
     start_date date NOT NULL,
     end_date date NOT NULL,
     room_id integer NOT NULL,
-    reservations_id integer NOT NULL,
+    reservations_id integer,
     restrictions_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -390,5 +388,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Uxh91q1WBeyuqI7R49mOWu7fLgxeAdv17nsloOLYuHVUz6GczErm0aUx9K4VlEo
+\unrestrict mMA0v3gKejAPxVoiFMpdv6X6dIcbKn3DNnfgh0biPDKbBLrmvOwKYcGkiX0cZEu
 
