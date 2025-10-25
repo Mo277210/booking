@@ -123,6 +123,7 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 
     sd:=r.Form.Get("start_date")
     ed:=r.Form.Get("end_date")
+
     //2020-01-01 --01/02 03:04:05PM '06-0700
     layout:="2006-01-02"
     StartDate,err:=time.Parse(layout,sd)
@@ -227,7 +228,48 @@ func (m *Respostory) Availability(w http.ResponseWriter, r *http.Request) {
 func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
   start:=r.Form.Get("start")
   end:=r.Form.Get("end")
-  w.Write([]byte("start date is: "+start+" end date is: "+end))
+
+        layout:="2006-01-02"
+    StartDate,err:=time.Parse(layout,start)
+    if err!=nil {
+        helpers.ServerError(w,err)
+        return
+    }
+    endDate,err:=time.Parse(layout,end)
+    if err!=nil {
+        helpers.ServerError(w,err)
+        return
+    }
+
+    rooms,err:=m.DB.SearchAvailabilityForAllRooms(StartDate,endDate)
+
+    if err!=nil {
+        helpers.ServerError(w,err)
+        return
+    }
+
+
+    if len(rooms)==0{
+    m.App.Session.Put(r.Context(), "error", "No availability")
+    http.Redirect(w,r,"/search-availability",http.StatusSeeOther)
+    return
+    }
+
+    data:=make(map[string]interface{})
+    data["rooms"]=rooms
+// res
+res := models.Reservation{
+    StartDate: StartDate, 
+    EndDate:   endDate,
+  
+}
+
+m.App.Session.Put(r.Context(), "reservation", res)
+
+  render.Template(w, r, "choose-room", &models.TemplateData{
+        Data: data,
+    })
+
 	}
 
 	type jsonResponse struct{
