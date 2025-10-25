@@ -7,10 +7,11 @@
 
                 {{$room:= index .Data "rooms"}}
 
-                {{range $room}}
-                    {{.RoomName}} </a>
-                {{end}}
-
+                <url>
+                    {{range $room}}
+                       <li><a href="/choose-room/{{.ID}}"> {{.RoomName}}</a> </li>
+                    {{end}}
+                </url>
         </div>
     </div>
 </div>

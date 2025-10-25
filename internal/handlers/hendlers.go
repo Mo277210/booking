@@ -38,11 +38,13 @@ package handlers
 // غالبًا بتستخدم مع render.Template عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
+	
 	"strconv"
 	"time"
 
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/driver"
 	"githup.com/Mo277210/booking/internal/forms"
@@ -257,7 +259,7 @@ func (m *Respostory) PostAvailability(w http.ResponseWriter, r *http.Request) {
 
     data:=make(map[string]interface{})
     data["rooms"]=rooms
-// res
+// res is save in the session
 res := models.Reservation{
     StartDate: StartDate, 
     EndDate:   endDate,
@@ -334,7 +336,25 @@ func (m *Respostory) ReservationSummary(w http.ResponseWriter, r *http.Request) 
     })
 }
 
+func (m *Respostory) ChooseRoom(w http.ResponseWriter, r *http.Request) {
+    roomID, err := strconv.Atoi(chi.URLParam(r,"id"))
+    if err != nil {
+        helpers.ServerError(w, err)
+        return
+    }
+ m.App.Session.Get(r.Context(), "reservation")
+   
+res,ok:=m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+if !ok {
+    
+     helpers.ServerError(w, err)
+        return
+}
+res.RoomID=roomID
+m.App.Session.Put(r.Context(), "reservation", res)
+http.Redirect(w,r,"/make-reservation",http.StatusSeeOther)
 
+}
 
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
