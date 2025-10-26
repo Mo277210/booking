@@ -329,14 +329,35 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    resp := struct {
-        OK      bool   `json:"ok"`
-        Message string `json:"message"`
-    }{
-        OK:      true,
-        Message: "Available!",
-    }
+   
 
+    sd:=r.Form.Get("start")
+    ed:=r.Form.Get("end")
+    layout:="2006-01-02"
+
+    StartDate,err:=time.Parse(layout,sd)
+    if err!=nil {
+        helpers.ServerError(w,err)
+        return
+    }
+    
+    endDate,err:=time.Parse(layout,ed)
+    if err!=nil {
+        helpers.ServerError(w,err)
+        return
+    }
+   
+ 
+    roomID,_:=strconv.Atoi(r.Form.Get("room_id"))
+    
+
+   available,err:=m.DB.SearchAvailabilityByDatesByRoomID(StartDate,endDate,roomID)
+
+    resp := jsonResponse{
+        OK:      available,
+        Message: "",
+    }
+ 
     out, err := json.Marshal(resp)
     if err != nil {
         helpers.ServerError(w,err)
