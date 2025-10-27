@@ -321,6 +321,9 @@ m.App.Session.Put(r.Context(), "reservation", res)
 	type jsonResponse struct{
 		OK bool `json:"ok"`
 		Message string `json:"message"`
+        RoomID string `json:"room_id"`
+        StartDate string `json:"start_date"`
+        EndDate string `json:"end_date"`
 	}
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
@@ -356,6 +359,9 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
     resp := jsonResponse{
         OK:      available,
         Message: "",
+        RoomID: strconv.Itoa(roomID),
+        StartDate: sd,
+        EndDate: ed,
     }
  
     out, err := json.Marshal(resp)
