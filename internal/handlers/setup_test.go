@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"os"
+	"testing"
 
 	"text/template"
 	// "html/template"
@@ -30,8 +31,7 @@ var pathToTemplates = "../../templates"
 
 var funcMap = template.FuncMap{}
 
-func getRoutes() http.Handler {
-
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 app = config.AppConfig{}
 	app.InProduction = false
@@ -68,6 +68,14 @@ if err != nil {
 	NewHandlers(repo)
 
 	render.NewRenderer(&app)
+
+	os.Exit(m.Run())
+	
+
+}
+
+func getRoutes() http.Handler {
+
 	
 	mux := chi.NewRouter()
 
