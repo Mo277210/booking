@@ -83,6 +83,13 @@ func NewRepo(a *config.AppConfig,db *driver.DB) *Respostory {
 	}
 }
 
+func NewTestRepo(a *config.AppConfig) *Respostory  {
+	return &Respostory{
+		App: a,
+        DB: dbrepo.NewTestingRepo(a),
+	}
+}
+
 // NewHandlers sets the repository for the handlers
 func NewHandlers(r *Respostory) {
 	Repo = r

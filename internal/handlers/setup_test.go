@@ -59,11 +59,12 @@ app = config.AppConfig{}
 	app.TemplateCache = tc
 	app.UseCache = true
 	//---------------------------------------------------------------------------------------------
-db, err := driver.ConnectSQL("host=localhost port=5432 dbname=booking user=postgres password=1234")
+_ , err = driver.ConnectSQL("host=localhost port=5432 dbname=booking user=postgres password=1234")
 if err != nil {
     log.Fatal("cannot connect to DB")
 }
-	repo := NewRepo(&app,db)
+
+	repo := NewTestRepo(&app)
 	NewHandlers(repo)
 
 	render.NewRenderer(&app)

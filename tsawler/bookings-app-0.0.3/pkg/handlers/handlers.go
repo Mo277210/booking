@@ -23,6 +23,13 @@ func NewRepo(a *config.AppConfig) *Repository {
 	}
 }
 
+// NewTestRepo creates a new repository for tests only
+func NewTestRepo(a *config.AppConfig) *Repository {
+	return &Repository{
+		App: a,
+	}
+}
+
 // NewHandlers sets the repository for the handlers
 func NewHandlers(r *Repository) {
 	Repo = r
