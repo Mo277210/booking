@@ -37,7 +37,7 @@ import (
 	"githup.com/Mo277210/booking/internal/driver"
 )
 
-const portNumber = ":8086"
+const portNumber = ":8087"
 
 var app config.AppConfig
 var infoLog *log.Logger
