@@ -340,6 +340,28 @@ m.App.Session.Put(r.Context(), "reservation", res)
 	}
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+   //need to parse request body to get data from the form
+    err:=r.ParseForm()
+   
+    if err!=nil {
+        //can not parse the form,,so return appropriate json 
+        //Parsing تاريخ (Date)
+// t, err := time.Parse("2006-01-02", "2025-10-26")
+
+
+// 🔹 هنا Parse معناها:
+// حوّل النص "2025-10-26" إلى كائن وقت (time.Time) يستطيع Go التعامل معه.
+      resp:=jsonResponse{
+        OK:      false,
+        Message: "Internal server error",
+      }
+      out,_:=json.MarshalIndent(resp,"","     ")
+      w.Header().Set("Content-Type", "application/json")
+      w.Write(out)
+      return
+   }
+   
+   
     if r.Method != "POST" {
         w.WriteHeader(http.StatusMethodNotAllowed)
         return
@@ -371,6 +393,17 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
    available,err:=m.DB.SearchAvailabilityByDatesByRoomID(StartDate,endDate,roomID)
 
+   if err !=nil {
+      resp:=jsonResponse{
+        OK:      false,
+        Message: "Error connecting to database",
+      }
+      out,_:=json.MarshalIndent(resp,"","     ")
+      w.Header().Set("Content-Type", "application/json")
+      w.Write(out)
+      return
+    
+   }
     resp := jsonResponse{
         OK:      available,
         Message: "",
@@ -378,12 +411,12 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
         StartDate: sd,
         EndDate: ed,
     }
+
+    //i remove the error check,since we handle all aspects of
+    // the json right here 
  
-    out, err := json.Marshal(resp)
-    if err != nil {
-        helpers.ServerError(w,err)
-        return
-    }
+    out, _ := json.Marshal(resp)
+ 
 
     w.Header().Set("Content-Type", "application/json")
     w.Write(out)

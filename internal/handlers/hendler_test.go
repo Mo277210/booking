@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -283,7 +284,43 @@ if rr.Code!=http.StatusTemporaryRedirect{
 	}
 		}
 
+func TestRepository_AvailabilityJSON(t *testing.T){
 
+	//first  case -rooms are not available
+	resBody:="start=2050-01-01"
+	resBody=fmt.Sprintf("%s&%s",resBody,"end=2050-01-10")
+	resBody=fmt.Sprintf("%s&%s",resBody,"room_id=1")
+
+	
+	//create request
+	  req,_:=http.NewRequest("POST","/search-availability-json",strings.NewReader(resBody))
+	  
+	  //get context from request
+	  ctx:=getCtx(req)
+	  req=req.WithContext(ctx)
+	  
+	  //set the request header
+	  req.Header.Set("Content-Type","application/x-www-form-urlencoded")
+	 
+	  //make handler handlerfunc
+	  handler:=http.HandlerFunc(Repo.AvailabilityJSON)
+	
+	  //got response recorder
+	  rr:=httptest.NewRecorder()
+	
+	  //serve the http
+	  handler.ServeHTTP(rr,req)
+
+	  var j jsonResponse
+
+	  err:=json.Unmarshal([]byte(rr.Body.String()),&j)
+	  if err!=nil{
+		  t.Error("failed to parse json")
+	  }
+
+
+
+}
 
 func getCtx(req *http.Request) context.Context{
 	ctx,err:=session.Load(req.Context(),req.Header.Get("X-Session"))
@@ -292,3 +329,8 @@ func getCtx(req *http.Request) context.Context{
 	}
 	return ctx
 }
+
+// | العملية                | الدالة        | من             | إلى            | مثال                                  |
+// | ---------------------- | ------------- | -------------- | -------------- | ------------------------------------- |
+// | **تحليل النص إلى وقت** | `time.Parse`  | `"2025-10-26"` | `time.Time`    | إدخال من المستخدم                     |
+// | **تحويل الوقت إلى نص** | `time.Format` | `time.Time`    | `"2025-10-26"` | عرض للمستخدم أو حفظ في قاعدة البيانات |
