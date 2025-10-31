@@ -38,7 +38,7 @@ package handlers
 // غالبًا بتستخدم مع render.Template عشان تعرض صفحات HTML.
 import (
 	"encoding/json"
-	"errors"
+	
 	
 
 	"strconv"
@@ -157,8 +157,9 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 
    reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
     if !ok {
-        helpers.ServerError(w, errors.New("Can't get reservation from session"))
-        return
+        m.App.Session.Put(r.Context(), "error", "can't parse reservation from session")
+            http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+            return
     }
     
 
@@ -227,8 +228,9 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 
   newReservationID,err:=  m.DB.InsertReservation(reservation)
   if err!=nil {
-      helpers.ServerError(w,err)
-      return
+       m.App.Session.Put(r.Context(), "error", "can't insert reservation into database")
+            http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+            return
   }
 
 
@@ -246,8 +248,9 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 err=m.DB.InsertRoomRestriction(restriction)
 if err!=nil {
-    helpers.ServerError(w,err)
-    return
+     m.App.Session.Put(r.Context(), "error", "can't insert room restriction")
+            http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+            return
 }
  
 
@@ -350,14 +353,16 @@ func (m *Respostory) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
     StartDate,err:=time.Parse(layout,sd)
     if err!=nil {
-        helpers.ServerError(w,err)
-        return
+         m.App.Session.Put(r.Context(), "error", "can't parse start date")
+            http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+            return
     }
     
     endDate,err:=time.Parse(layout,ed)
     if err!=nil {
-        helpers.ServerError(w,err)
-        return
+        m.App.Session.Put(r.Context(), "error", "can't parse end date")
+            http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+            return
     }
    
  
