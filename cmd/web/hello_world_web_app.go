@@ -26,7 +26,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/smtp"
+	// "net/smtp"
 	"os"
 	"time"
 
@@ -60,12 +60,12 @@ func main() {
 	defer close(app.MailChan)
 	
 
-from := "me@here.com"
-auth := smtp.PlainAuth("", from, "1234", "localhost")
-err = smtp.SendMail("localhost:1025", auth, from, []string{"you@here.com"}, []byte("Subject: Test\r\n\r\nHello world"))
-if err != nil {
-    log.Println("Error sending email:", err)
-}
+// from := "me@here.com"
+// auth := smtp.PlainAuth("", from, "1234", "localhost")
+// err = smtp.SendMail("localhost:1025", auth, from, []string{"you@here.com"}, []byte("Subject: Test\r\n\r\nHello world"))
+// if err != nil {
+//     log.Println("Error sending email:", err)
+// }
 
 
 
@@ -88,15 +88,11 @@ func run() (*driver.DB,error) {
 
 	mailchan := make(chan models.MailData)
 	app.MailChan = mailchan
-	defer close(app.MailChan)
+	
+// شغّل مستمع البريد بعد ثانيتين من تشغيل السيرفر
+
 	listenForMail()
-	msg:= models.MailData{
-		To: "you@here.com",	
-		From: "me@here.com",
-		Subject: "Hello from mailhog",
-		Content: "This is the email body",
-	}
-	app.MailChan <- msg
+
 
 	//---------------------------------------------------------------------------------------------
 

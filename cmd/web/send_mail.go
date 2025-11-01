@@ -21,6 +21,8 @@ func listenForMail() {
 }
 
 func sendMsg(m models.MailData) error {
+
+   
 	server := mail.NewSMTPClient()
 	server.Host = "localhost"
 	server.Port = 1025
