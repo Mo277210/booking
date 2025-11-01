@@ -75,4 +75,5 @@ type MailData struct {
 	From    string
 	Subject string
 	Content template.HTML
+	Template string
 }

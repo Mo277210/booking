@@ -266,6 +266,7 @@ if err!=nil {
 		From: "me@here.com",
 		Subject: "Reservation Confirmation",
 		Content: template.HTML(htmlMessage),
+        Template:"basic.html", 
 	}
 	m.App.MailChan <- msg
 
