@@ -1,7 +1,10 @@
 package models
 
-import "time"
-
+import (
+	// "text/template"
+	"time"
+	"html/template"
+)
 
 // Users holds the user data modle
 type User struct{
@@ -64,4 +67,12 @@ type RoomRestrictions struct {
 	Room          Room
 	Reservation   Reservation
 	Restriction   Restriction
+}
+
+// MailData holds the data about an email
+type MailData struct {
+	To      string
+	From    string
+	Subject string
+	Content template.HTML
 }

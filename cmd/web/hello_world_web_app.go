@@ -38,6 +38,8 @@ import (
 	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
+	
+	
 )
 
 const portNumber = ":8087"
@@ -55,6 +57,8 @@ func main() {
 
 
 	defer db.SQL.Close()
+	defer close(app.MailChan)
+	
 
 from := "me@here.com"
 auth := smtp.PlainAuth("", from, "1234", "localhost")
@@ -81,6 +85,20 @@ func run() (*driver.DB,error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+
+	mailchan := make(chan models.MailData)
+	app.MailChan = mailchan
+	defer close(app.MailChan)
+	listenForMail()
+	msg:= models.MailData{
+		To: "you@here.com",	
+		From: "me@here.com",
+		Subject: "Hello from mailhog",
+		Content: "This is the email body",
+	}
+	app.MailChan <- msg
+
+	//---------------------------------------------------------------------------------------------
 
 	app.InProduction = false
 	infoLog = log.New(os.Stdout, "INFP\t", log.Ldate|log.Ltime)
