@@ -10,6 +10,7 @@ import (
 	// "html/template"
 	"log"
 	"net/http"
+	
 	"path/filepath"
 	"time"
 
@@ -50,6 +51,13 @@ app = config.AppConfig{}
 
 	app.Session = session
 
+	mailchan := make(chan models.MailData)
+	app.MailChan = mailchan
+	defer close(app.MailChan)
+
+	listenForMail()
+
+
 	tc, err := CreateTestTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
@@ -72,6 +80,14 @@ if err != nil {
 	os.Exit(m.Run())
 	
 
+}
+
+func listenForMail() {
+	go func() {
+		for {
+			_=<-app.MailChan
+		}
+	}()
 }
 
 func getRoutes() http.Handler {
