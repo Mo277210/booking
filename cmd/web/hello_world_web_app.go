@@ -9,6 +9,8 @@ package main
 //go run ./cmd/web/hello_world_web_app.go
 //. Using pat for routing
 // go run ./cmd/web/...
+// cd "D:\visalstadio_code\heelo_ssswold\booking\MailHog"
+// .\MailHog_windows_amd64.exe
 ////////////////////////////////////////////////////////////////////////////
 //go run hello_world_web_app.go hendlers.go render.go   <----------------- correct command to run the code
 //////////////////////////////////////////////////////////////////////////
@@ -24,17 +26,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/smtp"
 	"os"
 	"time"
 
 	// "html/template"
 	"github.com/alexedwards/scs/v2"
 	"githup.com/Mo277210/booking/internal/config"
+	"githup.com/Mo277210/booking/internal/driver"
 	"githup.com/Mo277210/booking/internal/handlers"
 	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
-	"githup.com/Mo277210/booking/internal/driver"
 )
 
 const portNumber = ":8087"
@@ -52,6 +55,15 @@ func main() {
 
 
 	defer db.SQL.Close()
+
+from := "me@here.com"
+auth := smtp.PlainAuth("", from, "1234", "localhost")
+err = smtp.SendMail("localhost:1025", auth, from, []string{"you@here.com"}, []byte("Subject: Test\r\n\r\nHello world"))
+if err != nil {
+    log.Println("Error sending email:", err)
+}
+
+
 
 	fmt.Println(fmt.Sprintf("starting web server at port %s", portNumber))
 
