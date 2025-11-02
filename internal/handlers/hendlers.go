@@ -40,6 +40,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 
 	"strconv"
 	"time"
@@ -537,6 +538,40 @@ func (m *Respostory) ShowLogin(w http.ResponseWriter, r *http.Request) {
     render.Template(w, r, "login", &models.TemplateData{
         Form: forms.New(nil),
     })
+}
+// PostShowLogin handles logging the user in
+func (m *Respostory) PostShowLogin(w http.ResponseWriter, r *http.Request) {
+_=m.App.Session.RenewToken(r.Context())
+
+    err := r.ParseForm()
+    if err != nil {
+        helpers.ServerError(w, err)
+        return
+    }
+
+    form := forms.New(r.PostForm)
+    form.Required("email", "password")
+    form.IsEmail("email")
+    if !form.Valid() {
+     //todo -take user back to login page
+    }
+
+    email := form.Get("email")
+    password := form.Get("password")
+
+    id, _, err := m.DB.Authenticate(email, password)
+    if err != nil {
+        log.Println(err)
+        m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
+        http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+        return
+     
+    }
+
+    m.App.Session.Put(r.Context(), "user_id", id)
+    m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }
 
 // //ممتاز جدًا 🙌

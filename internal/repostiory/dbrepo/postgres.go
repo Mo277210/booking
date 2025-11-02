@@ -243,8 +243,8 @@ return nil
 
 }
 
-//Autenticate authenticates a user
-func (m *postgreDBRepo) Autenticate(email, testPassword string) (int, string, error) {
+//Authenticate authenticates a user
+func (m *postgreDBRepo) Authenticate(email, testPassword string) (int, string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var id int

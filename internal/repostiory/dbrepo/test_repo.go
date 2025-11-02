@@ -68,6 +68,6 @@ func (m *testDBRepo) GetUserByID(id int) (models.User, error) {
 func (m *testDBRepo) UpdateUser(u models.User) error {
 	return nil
 }
-func (m *testDBRepo) Autenticate(email, testPassword string) (int, string, error) {
+func (m *testDBRepo) Authenticate(email, testPassword string) (int, string, error) {
 	return 1, "", nil
 }
