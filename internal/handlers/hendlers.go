@@ -585,6 +585,10 @@ func (m *Respostory) Logout(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 }
 
+func (m *Respostory) AdminDashboard(w http.ResponseWriter, r *http.Request) {
+    render.Template(w, r, "admin-dashboard", &models.TemplateData{})
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.
