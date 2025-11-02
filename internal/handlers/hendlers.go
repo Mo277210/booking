@@ -533,6 +533,12 @@ func (m *Respostory) BookRoom(w http.ResponseWriter, r *http.Request) {
  http.Redirect(w,r,"/make-reservation",http.StatusSeeOther)
 }
 
+func (m *Respostory) ShowLogin(w http.ResponseWriter, r *http.Request) {
+    render.Template(w, r, "login", &models.TemplateData{
+        Form: forms.New(nil),
+    })
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.

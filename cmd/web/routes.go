@@ -305,7 +305,8 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/choose-room/{id}", handlers.Repo.ChooseRoom)
 	mux.Get("/book-room", handlers.Repo.BookRoom)
 	
-
+	mux.Get("/user/login", handlers.Repo.ShowLogin)
+	
 	mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
 	//Enabling static files
 	fileServer := http.FileServer(http.Dir("./static/"))
