@@ -2,9 +2,11 @@ package dbrepo
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"githup.com/Mo277210/booking/internal/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (m *postgreDBRepo) AllUsers() bool {
@@ -185,4 +187,85 @@ where
    }
 
 	return room, nil
+}
+
+//GetUserByID gets a user by id
+func (m *postgreDBRepo) GetUserByID(id int) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+	SELECT id, first_name, last_name, email, password, access_level, created_at, updated_at
+	FROM users
+	WHERE id = $1
+	`
+
+	row := m.DB.QueryRowContext(ctx, query, id)
+
+	var u models.User
+	err := row.Scan(
+		&u.ID,
+		&u.FirstName,
+		&u.LastName,
+		&u.Email,
+		&u.Password,
+		&u.AccessLevel,
+		&u.CreateAt,
+		&u.UpdateAt,
+	)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return u, nil
+}
+
+//UpdateUser updates a user in the database
+func (m *postgreDBRepo) UpdateUser(u models.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	query := `
+	UPDATE users
+	SET first_name = $1, last_name = $2, email = $3, access_level = $4, updated_at = $5
+	
+	`
+_,err:=m.DB.ExecContext(ctx,query,
+u.FirstName,
+u.LastName,
+u.Email,
+u.AccessLevel,
+time.Now(),
+)
+if err!=nil{
+	return err
+}
+return nil
+
+}
+
+//Autenticate authenticates a user
+func (m *postgreDBRepo) Autenticate(email, testPassword string) (int, string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	var id int
+	var hashedPassword string
+	
+	query := `
+	SELECT id, password
+	FROM users
+	WHERE email = $1
+	`
+	row := m.DB.QueryRowContext(ctx, query, email)
+	err := row.Scan(&id, &hashedPassword)
+	if err != nil {
+		return id, "", err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
+
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return 0, "", errors.New("incorrect password")
+	} else if err != nil {
+		return 0, "", err
+	}
+	return id, hashedPassword, nil
 }
