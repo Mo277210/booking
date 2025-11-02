@@ -11,6 +11,23 @@ package main
 // go run ./cmd/web/...
 // cd "D:\visalstadio_code\heelo_ssswold\booking\MailHog"
 // .\MailHog_windows_amd64.exe
+//package main
+
+//عشان تولد كلمة سر مشفرة
+// import (
+// 	"fmt"
+// 	"golang.org/x/crypto/bcrypt"
+// )
+
+// func main() {
+// 	password := "password"
+	
+	
+// 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
+	
+// 	fmt.Println(string(hashedPassword))
+// }
+
 ////////////////////////////////////////////////////////////////////////////
 //go run hello_world_web_app.go hendlers.go render.go   <----------------- correct command to run the code
 //////////////////////////////////////////////////////////////////////////
