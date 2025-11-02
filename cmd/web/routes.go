@@ -307,6 +307,7 @@ func routes(app *config.AppConfig) http.Handler {
 	
 	mux.Get("/user/login", handlers.Repo.ShowLogin)
 	mux.Post("/user/login", handlers.Repo.PostShowLogin)
+	mux.Get("/user/logout", handlers.Repo.Logout)
 
 	mux.Get("/contact", http.HandlerFunc(handlers.Repo.Contact))
 	//Enabling static files

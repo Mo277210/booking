@@ -578,6 +578,13 @@ _=m.App.Session.RenewToken(r.Context())
 
 }
 
+// Logout logs the user out
+func (m *Respostory) Logout(w http.ResponseWriter, r *http.Request) {
+    _ = m.App.Session.Destroy(r.Context())
+    _ = m.App.Session.RenewToken(r.Context())
+    http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.
