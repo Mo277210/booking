@@ -553,7 +553,11 @@ _=m.App.Session.RenewToken(r.Context())
     form.Required("email", "password")
     form.IsEmail("email")
     if !form.Valid() {
-     //todo -take user back to login page
+        render.Template(w, r, "login", &models.TemplateData{
+            Form: form,
+        })
+        return
+
     }
 
     email := form.Get("email")

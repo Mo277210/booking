@@ -29,10 +29,13 @@ package main
 // ✅ التحكم في الـ Response (زي إضافة Headers).
 import (
 	"fmt"
-	"github.com/justinas/nosurf"
 	"net/http"
+
+	"github.com/justinas/nosurf"
+	"githup.com/Mo277210/booking/internal/helpers"
 )
 
+// WriteToConsole writes to the console
 func WriteToConsole(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +45,7 @@ func WriteToConsole(next http.Handler) http.Handler {
 }
 
 // NoSurf adds CSRF protection to all POST requests
+//يعني حماية ضد هجمات تزوير الطلبات عبر المواقع (CSRF - Cross-Site Request Forgery).
 func NoSurf(next http.Handler) http.Handler {
 
 	csrfHandler := nosurf.New(next)
@@ -57,6 +61,20 @@ func NoSurf(next http.Handler) http.Handler {
 }
 
 // SessionLoad loads and saves the session on every request
+// بتأكد إن جلسة المستخدم (Session) بتتخزن وتتحمل مع كل طلب بيجيلك.
 func SessionLoad(next http.Handler) http.Handler {
 	return app.Session.LoadAndSave(next)
+}
+
+// Auth verifies that a user is authenticated
+// بتتحقق إن المستخدم مسجل دخوله قبل ما يسمحله يوصل للصفحات المحمية.
+func Auth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !helpers.IsAuthenticated(r) {
+			app.Session.Put(r.Context(), "error", "Log in first")
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
