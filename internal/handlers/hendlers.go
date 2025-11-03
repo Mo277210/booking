@@ -41,6 +41,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"strings"
 
 	"strconv"
 	"time"
@@ -623,6 +624,38 @@ func (m *Respostory) AdminNewReservations(w http.ResponseWriter, r *http.Request
     })
 }
 
+// AdminShowReservation shows reservation details in admin area
+func (m *Respostory) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+    exploded := strings.Split(r.URL.Path, "/")
+         id , err := strconv.Atoi(exploded[4])
+         if err != nil {
+             helpers.ServerError(w, err)
+             return
+         }
+   
+         src:= exploded[3]
+         stringMap := make(map[string]string)
+         stringMap["src"] = src
+    // get reservation from database
+
+    re, err := m.DB.GetReservationByID(id)
+    if err != nil {
+        helpers.ServerError(w, err)
+        return
+    }
+
+    data := make(map[string]interface{})
+    data["reservation"] = re
+
+
+       render.Template(w, r, "admin-reservations-show", &models.TemplateData{
+       StringMap: stringMap,
+        Data: data,
+        Form: forms.New(nil),
+       })
+    }
+
+// AdminReservationsCalendar displays the reservation calendar
 func (m *Respostory) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
     render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{})
 }
