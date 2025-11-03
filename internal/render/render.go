@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"text/template"
 
@@ -59,7 +60,14 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
     buf := new(bytes.Buffer)
     td = AddDefaultData(td, r)
 
-    err := t.ExecuteTemplate(buf, "base", td)
+    // ✅ إضافة فقط لتحديد القالب الرئيسي
+    mainLayout := "base"
+	if tmpl == "admin-dashboard" || tmpl == "admin-dashboard.html" {
+		mainLayout = "admin"
+	}
+
+	err := t.ExecuteTemplate(buf, mainLayout, td)
+	
     if err != nil {
         log.Println("❌ Error executing base template:", err)
         http.Error(w, "Internal Server Error", 500)
@@ -83,11 +91,9 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	log.Println("🔍 Current working directory:", cwd)
 	log.Println("🔍 Template path being searched:", pathToTemplates)
 
-
 	pages, err := filepath.Glob(fmt.Sprintf("%s/*.html", pathToTemplates))
 	if err != nil {
 		log.Println("📂 Looking for templates in:", pathToTemplates)
-
 		return mycache, err
 	}
 
@@ -103,9 +109,16 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return mycache, err
 		}
 
+		// ✅ ربط القالب الأساسي base.html
 		ts, err = ts.ParseFiles(fmt.Sprintf("%s/base.html", pathToTemplates))
 		if err != nil {
 			return mycache, err
+		}
+
+		// ✅ ربط قالب الأدمن admin.html إذا وُجد
+		adminLayout := fmt.Sprintf("%s/admin.html", pathToTemplates)
+		if _, err := os.Stat(adminLayout); err == nil {
+			ts, _ = ts.ParseFiles(adminLayout)
 		}
 
 		mycache[name] = ts
