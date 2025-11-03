@@ -10,24 +10,29 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/justinas/nosurf"
 	"githup.com/Mo277210/booking/internal/config"
 	"githup.com/Mo277210/booking/internal/models"
 )
 
-var funcMap = template.FuncMap{}
+var funcMap = template.FuncMap{
+	"humenDate": HumenDate,
+}
 
 var app *config.AppConfig
 var pathToTemplates = "./templates"
-
 
 //  NewRenderer returns a new template renderer
 
 func NewRenderer(a *config.AppConfig) {
 	app = a
 }
-
+// HumenDate formats a time.Time object into a human-readable string
+func HumenDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Error = app.Session.PopString(r.Context(), "error")
@@ -41,7 +46,7 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 	return td
 }
 
-//Template renders a template
+// Template renders a template
 func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
     var tc map[string]*template.Template
 
@@ -87,7 +92,6 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
     return nil
 }
 
-
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	mycache := map[string]*template.Template{}
 	cwd, _ := filepath.Abs(".")
@@ -107,7 +111,11 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		name := filepath.Base(page)
 		log.Println("Parsing template:", name)
 
-		ts, err := template.ParseFiles(page)
+		// ✅ السطر المضاف فقط (ربط funcMap قبل ParseFiles)
+		ts := template.New(name).Funcs(funcMap)
+
+		// 🔹 لم نحذف أي سطر من الكود القديم
+		ts, err = ts.ParseFiles(page)
 		if err != nil {
 			return mycache, err
 		}
@@ -129,4 +137,3 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 	return mycache, nil
 }
-
