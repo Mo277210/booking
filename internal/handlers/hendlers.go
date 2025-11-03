@@ -589,6 +589,16 @@ func (m *Respostory) AdminDashboard(w http.ResponseWriter, r *http.Request) {
     render.Template(w, r, "admin-dashboard", &models.TemplateData{})
 }
 
+func (m *Respostory) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+    render.Template(w, r, "admin-new-reservations", &models.TemplateData{})
+}
+func (m *Respostory) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+    render.Template(w, r, "admin-all-reservations", &models.TemplateData{})
+}
+func (m *Respostory) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+    render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{})
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/justinas/nosurf"
@@ -62,12 +63,14 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
 
     // ✅ إضافة فقط لتحديد القالب الرئيسي
     mainLayout := "base"
-	if tmpl == "admin-dashboard" || tmpl == "admin-dashboard.html" {
+	
+	// ✅ أي قالب يحتوي على كلمة "admin" يستخدم القالب الأساسي admin.html
+	if strings.Contains(tmpl, "admin") {
 		mainLayout = "admin"
 	}
 
 	err := t.ExecuteTemplate(buf, mainLayout, td)
-	
+
     if err != nil {
         log.Println("❌ Error executing base template:", err)
         http.Error(w, "Internal Server Error", 500)
