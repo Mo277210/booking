@@ -1,73 +1,146 @@
 {{template "admin" .}}
 
 {{define "page-title"}}
-    Show Reservation
+Show Reservation
 {{end}}
 
 {{define "content"}}
-{{$res:= index .Data "reservation"}}
-{{$src:= index .StringMap "src"}}
-    <div class="col-md-12">
+{{$res := index .Data "reservation"}}
+{{$src := index .StringMap "src"}}
+<div class="col-md-12">
 
-
-      <p>
-    <strong>Arrival:</strong>  {{humenDate $res.StartDate}}<br>
-    <strong>Departure:</strong>  {{humenDate $res.EndDate}}<br>
-    <strong>Room :</strong> {{$res.Room.RoomName}}<br>
-
-      </p>
+    <p>
+        <strong>Arrival:</strong> {{humenDate $res.StartDate}}<br>
+        <strong>Departure:</strong> {{humenDate $res.EndDate}}<br>
+        <strong>Room :</strong> {{$res.Room.RoomName}}<br>
+    </p>
 
     <form method="post" action="/admin/reservations/{{$src}}/{{$res.ID}}" class="" novalidate>
-                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-                        
-                 
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
-                        <div class="form-group mt-3">
-                        <label for="first_name">First Name:</label>
-                        {{with .Form.Errors.Get "first_name"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input class="form-control {{if .Form.Errors.Get "first_name"}} is-invalid {{end}}"
-                        id="first_name" autocomplete="off" type="text"
-                        name="first_name" value="{{$res.FirstName}}" required>
+        <div class="form-group mt-3">
+            <label for="first_name">First Name:</label>
+            {{with .Form.Errors.Get "first_name"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control {{if .Form.Errors.Get "first_name"}} is-invalid {{end}}"
+                   id="first_name" autocomplete="off" type="text"
+                   name="first_name" value="{{$res.FirstName}}" required>
+        </div>
 
-                    </div>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            {{with .Form.Errors.Get "last_name"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control {{if .Form.Errors.Get "last_name"}} is-invalid {{end}}"
+                   id="last_name" autocomplete="off" type="text"
+                   name="last_name" value="{{$res.LastName}}" required>
+        </div>
 
+        <div class="form-group">
+            <label for="email">Email:</label>
+            {{with .Form.Errors.Get "email"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control {{if .Form.Errors.Get "email"}} is-invalid {{end}}"
+                   id="email" autocomplete="off" type="email"
+                   name="email" value="{{$res.Email}}" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="last_name">Last Name:</label>
-                         {{with .Form.Errors.Get "last_name"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input class="form-control {{if .Form.Errors.Get "last_name"}} is-invalid {{end}}"
-                               id="last_name" autocomplete="off" type='text'
-                               name='last_name' value="{{$res.LastName}}" required>
-                    </div>
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            {{with .Form.Errors.Get "phone"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input class="form-control {{if .Form.Errors.Get "phone"}} is-invalid {{end}}"
+                   id="phone" autocomplete="off" type="tel"
+                   name="phone" value="{{$res.Phone}}" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                         {{with .Form.Errors.Get "email"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input class="form-control {{if .Form.Errors.Get "email"}} is-invalid {{end}}" id="email"
-                               autocomplete="off" type='email'
-                               name='email' value="{{$res.Email}}" required>
-                    </div>
+        <hr>
+        <input type="submit" class="btn btn-primary" value="Save">
+        <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
+        <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as processed</a>
+    </form>
 
-                    <div class="form-group">
-                        <label for="phone">Phone:</label>
-                         {{with .Form.Errors.Get "phone"}}
-                            <label class="text-danger">{{.}}</label>
-                        {{end}}
-                        <input class="form-control {{if .Form.Errors.Get "phone"}} is-invalid {{end}}" id="phone"
-                               autocomplete="off" type='tel'
-                               name='phone' value="{{$res.Phone}}" required>
-                    </div>
+</div>
+{{end}}
 
-                    <hr>
-                    <input type="submit" class="btn btn-primary" value="Save">
-                    <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
-                </form>
-    
-    </div>
+{{define "js"}}
+{{$src := index .StringMap "src"}}
+
+<!-- ✅ تحميل SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ✅ تحميل attention.js (لو موجود) -->
+<script src="/static/js/attention.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ✅ تعريف notify لو مش معرف
+    if (typeof notify === "undefined") {
+        window.notify = function (msg, type) {
+            Swal.fire({
+                icon: type || 'info',
+                title: msg,
+                confirmButtonText: 'OK'
+            });
+        };
+    }
+
+    // ✅ عرض الرسائل من السيرفر
+    {{with .Error}}
+    notify("{{. | js}}", "error");
+    {{end}}
+
+    {{with .Flash}}
+    notify("{{. | js}}", "success");
+    {{end}}
+
+    {{with .Warning}}
+    notify("{{. | js}}", "warning");
+    {{end}}
+
+    // ✅ تعريف attention.custom لو مش معرف
+    if (typeof attention === "undefined") {
+        var attention = {};
+    }
+
+    if (typeof attention.custom === "undefined") {
+        attention.custom = function (opts) {
+            Swal.fire({
+                icon: opts.icon || 'info',
+                title: opts.title || '',
+                text: opts.text || '',
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (typeof opts.callback === 'function') {
+                    opts.callback(result.isConfirmed);
+                }
+            });
+        };
+    }
+
+    // ✅ وظيفة زرار Mark as processed
+window.processRes = function (id) {
+    attention.custom({
+        icon: 'warning',
+        title: 'Are you sure?',
+        callback: function (confirmed) {
+            if (confirmed) {
+                window.location.href = "/admin/reservations-process/{{$src}}/" + id;
+            }
+        }
+    });
+};
+
+});
+if (typeof attention === "undefined") var attention = {};
+if (typeof attention.custom === "undefined") attention.custom = (o)=>Swal.fire({icon:o.icon||'info',title:o.title||'',showCancelButton:true,confirmButtonText:'OK',cancelButtonText:'Cancel'}).then(r=>o.callback&&o.callback(r.isConfirmed));
+
+</script>
 {{end}}

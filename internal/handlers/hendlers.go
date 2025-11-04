@@ -670,6 +670,19 @@ func (m *Respostory) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{})
 }
 
+// AdminProcessReservation marks a reservation as processed
+func (m *Respostory)AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+
+id,_:=strconv.Atoi(chi.URLParam(r,"id"))
+src:=chi.URLParam(r,"src")
+err:=m.DB.UpdateProcessedReservation(id,1)
+if err!=nil{
+    helpers.ServerError(w,err)
+    return
+}
+m.App.Session.Put(r.Context(),"flash","Reservation marked as processed")
+http.Redirect(w,r,fmt.Sprintf("/admin/reservations-%s",src),http.StatusSeeOther)
+}
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.

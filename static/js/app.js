@@ -83,12 +83,6 @@
                         c.didOpen();
                     }
                 },
-                    preConfirm: () => {
-                        return [
-                            document.getElementById('start').value,
-                            document.getElementById('end').value
-                        ]
-                    }
                 })
                 if (result) {
                     if (result.dismiss === Swal.DismissReason.cancel) {
