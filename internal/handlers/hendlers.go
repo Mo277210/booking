@@ -654,80 +654,102 @@ func (m *Respostory) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 	res.Phone = r.Form.Get("phone")
 
 	err = m.DB.UpdateResertvation(res)
-    if err != nil {
-        helpers.ServerError(w, err)
-        return
-    }
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
 
-    m.App.Session.Put(r.Context(), "flash", "Changes saved")
-    http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
-
+	m.App.Session.Put(r.Context(), "flash", "Changes saved")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 
 }
 
 // AdminReservationsCalendar displays the reservation calendar
 func (m *Respostory) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
-//asunme dthe month and year are current (there is no moth and year selection in the form specified)
-now:= time.Now()  
+	//asunme dthe month and year are current (there is no moth and year selection in the form specified)
+	now := time.Now()
 
-if r.URL.Query().Get("y")!="" {
-	year, _ := strconv.Atoi(r.URL.Query().Get("y"))
-	month, _ := strconv.Atoi(r.URL.Query().Get("m"))
+	if r.URL.Query().Get("y") != "" {
+		year, _ := strconv.Atoi(r.URL.Query().Get("y"))
+		month, _ := strconv.Atoi(r.URL.Query().Get("m"))
 
-	now = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
-	
+		now = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 
-  }
-  next:=now.AddDate(0,1,0)
-  last:=now.AddDate(0,-1,0)
+	}
 
- nextMoth:=next.Format("01")
- nextMothYear:=next.Format("2006")
+	data := make(map[string]interface{})
+	data["now"] = now
 
- lastMoth:=last.Format("01")
- lastMothYear:=last.Format("2006")
+	next := now.AddDate(0, 1, 0)
+	last := now.AddDate(0, -1, 0)
 
- stringMap:=make (map[string]string)
- stringMap["next_month"]=nextMoth
- stringMap["next_month_year"]=nextMothYear
+	nextMoth := next.Format("01")
+	nextMothYear := next.Format("2006")
 
- stringMap["last_month"]=lastMoth
- stringMap["last_month_year"]=lastMothYear
+	lastMoth := last.Format("01")
+	lastMothYear := last.Format("2006")
 
- stringMap["this_month"]=now.Format("01")
- stringMap["this_month_year"]=now.Format("2006")
+	stringMap := make(map[string]string)
+	stringMap["next_month"] = nextMoth
+	stringMap["next_month_year"] = nextMothYear
+
+	stringMap["last_month"] = lastMoth
+	stringMap["last_month_year"] = lastMothYear
+
+	stringMap["this_month"] = now.Format("01")
+	stringMap["this_month_year"] = now.Format("2006")
+
+	//get the first and last day of the month
+	currentYear, currentMonth, _ := now.Date()
+	location := now.Location()
+
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, location)
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+
+	intMap := make(map[string]int)
+	intMap["days_in_month"] = lastOfMonth.Day()
+
+	rooms, err := m.DB.AllRooms()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data["rooms"] = rooms
 
 	render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{
 		StringMap: stringMap,
+		Data:      data,
+		IntMap:    intMap,
 	})
 }
 
 // AdminProcessReservation marks a reservation as processed
-func (m *Respostory)AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+func (m *Respostory) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
 
-id,_:=strconv.Atoi(chi.URLParam(r,"id"))
-src:=chi.URLParam(r,"src")
-err:=m.DB.UpdateProcessedReservation(id,1)
-if err!=nil{
-    helpers.ServerError(w,err)
-    return
-}
-m.App.Session.Put(r.Context(),"flash","Reservation marked as processed")
-http.Redirect(w,r,fmt.Sprintf("/admin/reservations-%s",src),http.StatusSeeOther)
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+	err := m.DB.UpdateProcessedReservation(id, 1)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 }
 
 // AdminDeleteReservation deletes a reservation
-func (m *Respostory)AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
+func (m *Respostory) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
 
-id,_:=strconv.Atoi(chi.URLParam(r,"id"))
-src:=chi.URLParam(r,"src")
-err:=m.DB.DeleteReservation(id)
-if err!=nil{
-    helpers.ServerError(w,err)
-    return
-}
-m.App.Session.Put(r.Context(),"flash","Reservation deleted")
-http.Redirect(w,r,fmt.Sprintf("/admin/reservations-%s",src),http.StatusSeeOther)
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+	err := m.DB.DeleteReservation(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	m.App.Session.Put(r.Context(), "flash", "Reservation deleted")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 }
 
 // //ممتاز جدًا 🙌

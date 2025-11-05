@@ -19,10 +19,26 @@ import (
 
 var funcMap = template.FuncMap{
 	"humenDate": HumenDate,
+	"formatDate": FormatDate,
+	"iterate": Iterate,
+	"add": Add,
 }
 
 var app *config.AppConfig
 var pathToTemplates = "./templates"
+
+func Add(a,b int) int {
+	return a + b
+}
+
+// Iterate returns a slice of integers from 0 to count-1
+func Iterate(count int) []int {
+	var items []int
+	for i := 0; i < count; i++ {
+		items = append(items, i)
+	}
+	return items
+	}
 
 //  NewRenderer returns a new template renderer
 
@@ -32,6 +48,11 @@ func NewRenderer(a *config.AppConfig) {
 // HumenDate formats a time.Time object into a human-readable string
 func HumenDate(t time.Time) string {
 	return t.Format("2006-01-02")
+}
+
+func FormatDate(t time.Time, f string) string {
+
+	return t.Format(f)
 }
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
