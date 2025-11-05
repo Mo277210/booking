@@ -667,7 +667,39 @@ func (m *Respostory) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 
 // AdminReservationsCalendar displays the reservation calendar
 func (m *Respostory) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
-	render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{})
+//asunme dthe month and year are current (there is no moth and year selection in the form specified)
+now:= time.Now()  
+
+if r.URL.Query().Get("y")!="" {
+	year, _ := strconv.Atoi(r.URL.Query().Get("y"))
+	month, _ := strconv.Atoi(r.URL.Query().Get("m"))
+
+	now = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	
+
+  }
+  next:=now.AddDate(0,1,0)
+  last:=now.AddDate(0,-1,0)
+
+ nextMoth:=next.Format("01")
+ nextMothYear:=next.Format("2006")
+
+ lastMoth:=last.Format("01")
+ lastMothYear:=last.Format("2006")
+
+ stringMap:=make (map[string]string)
+ stringMap["next_month"]=nextMoth
+ stringMap["next_month_year"]=nextMothYear
+
+ stringMap["last_month"]=lastMoth
+ stringMap["last_month_year"]=lastMothYear
+
+ stringMap["this_month"]=now.Format("01")
+ stringMap["this_month_year"]=now.Format("2006")
+
+	render.Template(w, r, "admin-reservations-calendar", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
 
 // AdminProcessReservation marks a reservation as processed
