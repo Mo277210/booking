@@ -683,6 +683,21 @@ if err!=nil{
 m.App.Session.Put(r.Context(),"flash","Reservation marked as processed")
 http.Redirect(w,r,fmt.Sprintf("/admin/reservations-%s",src),http.StatusSeeOther)
 }
+
+// AdminDeleteReservation deletes a reservation
+func (m *Respostory)AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
+
+id,_:=strconv.Atoi(chi.URLParam(r,"id"))
+src:=chi.URLParam(r,"src")
+err:=m.DB.DeleteReservation(id)
+if err!=nil{
+    helpers.ServerError(w,err)
+    return
+}
+m.App.Session.Put(r.Context(),"flash","Reservation deleted")
+http.Redirect(w,r,fmt.Sprintf("/admin/reservations-%s",src),http.StatusSeeOther)
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.

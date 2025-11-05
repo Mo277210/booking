@@ -29,8 +29,10 @@
         label {
             font-weight: bold;
         }
+
         .notie-container {
-            z-index: 50000; /* زيادة قيمة z-index لضمان ظهور الإشعارات فوق العناصر الأخرى */
+            z-index: 50000;
+            /* زيادة قيمة z-index لضمان ظهور الإشعارات فوق العناصر الأخرى */
         }
     </style>
     {{block "css" .}}{{end}}
@@ -138,7 +140,10 @@
     <!-- plugins:js -->
     <script src="/static/admin/vendors/base/vendor.bundle.base.js"></script>
     <!-- endinject -->
+    <!-- ✅ أضف هنا -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
+    <!-- endinject -->
     <!-- inject:js -->
     <script src="/static/admin/js/off-canvas.js"></script>
     <script src="/static/admin/js/hoverable-collapse.js"></script>
@@ -172,17 +177,19 @@
             })
         }
 
-        { { with .Error} }
-        notify("{{. | js}}", "error");
-        { { end } }
+    {{with .Error}}
+    notify("{{. | js}}", "error");
+    {{end}}
 
-        { { with .Flash} }
-        notify("{{. | js}}", "success");
-        { { end } }
+    {{with .Flash}}
+    notify("{{. | js}}", "success");
+    {{end}}
 
-        { { with .Warning} }
-        notify("{{. | js}}", "warning");
-        { { end } }
+    {{with .Warning}}
+    notify("{{. | js}}", "warning");
+    {{end}}
+
+
 
 
     </script>
