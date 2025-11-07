@@ -227,6 +227,12 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+	room, err := m.DB.GetRoomByID(reservation.RoomID)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't get room from database")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 
 	restriction := models.RoomRestrictions{
 
@@ -235,6 +241,8 @@ func (m *Respostory) PostReservation(w http.ResponseWriter, r *http.Request) {
 		RoomID:        reservation.RoomID,
 		ReservationID: newReservationID,
 		RestrictionID: 1,
+		Room: room,
+		
 	}
 
 	err = m.DB.InsertRoomRestriction(restriction)
