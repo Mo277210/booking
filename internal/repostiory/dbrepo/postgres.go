@@ -321,7 +321,6 @@ func (m *postgreDBRepo) AllReservations() ([]models.Reservation, error) {
 	}
 	return reservations, nil
 }
-
 //AllNewReservations returns a slice of all new reservations
 func (m *postgreDBRepo) AllNewReservations() ([]models.Reservation, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

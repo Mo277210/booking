@@ -563,7 +563,7 @@ func (m *Respostory) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 
 // AdminAllReservations shows all reservations in admin area
 func (m *Respostory) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
-	reservations, err := m.DB.AllNewReservations()
+	reservations, err := m.DB.AllReservations()
 	if err != nil {
 		helpers.ServerError(w, err)
 		return
@@ -605,6 +605,14 @@ func (m *Respostory) AdminShowReservation(w http.ResponseWriter, r *http.Request
 	src := exploded[3]
 	stringMap := make(map[string]string)
 	stringMap["src"] = src
+
+	year:=r.URL.Query().Get("y")
+	month:=r.URL.Query().Get("m")
+
+	stringMap["year"] = year
+	stringMap["month"] = month
+
+
 	// get reservation from database
 
 	re, err := m.DB.GetReservationByID(id)
@@ -659,8 +667,20 @@ func (m *Respostory) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	month:=r.Form.Get("month")
+	year:=r.Form.Get("year")
+
 	m.App.Session.Put(r.Context(), "flash", "Changes saved")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+
+	if year == "" {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+		return
+	}else{
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
+		return
+	}
+
+	
 
 }
 
@@ -771,9 +791,19 @@ func (m *Respostory) AdminProcessReservation(w http.ResponseWriter, r *http.Requ
 		helpers.ServerError(w, err)
 		return
 	}
+	year:=r.URL.Query().Get("y")
+	month:=r.URL.Query().Get("m")
+
 	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	if year==""{
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+}else{
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
 }
+
+
+}
+	
 
 // AdminDeleteReservation deletes a reservation
 func (m *Respostory) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
@@ -785,8 +815,17 @@ func (m *Respostory) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 		helpers.ServerError(w, err)
 		return
 	}
+
+		year:=r.URL.Query().Get("y")
+		month:=r.URL.Query().Get("m")
+
 	m.App.Session.Put(r.Context(), "flash", "Reservation deleted")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	if year==""{
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	}else{
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
+	}
+	
 }
 
 // AdminPostReservationsCalendar handles post of reservation calendar
