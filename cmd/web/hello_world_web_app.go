@@ -21,10 +21,9 @@ package main
 
 // func main() {
 // 	password := "password"
-	
-	
+
 // 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
-	
+
 // 	fmt.Println(string(hashedPassword))
 // }
 
@@ -40,9 +39,11 @@ package main
 import (
 	// "database/sql"
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+
 	// "net/smtp"
 	"os"
 	"time"
@@ -55,8 +56,6 @@ import (
 	"githup.com/Mo277210/booking/internal/helpers"
 	"githup.com/Mo277210/booking/internal/models"
 	"githup.com/Mo277210/booking/internal/render"
-	
-	
 )
 
 const portNumber = ":8087"
@@ -103,6 +102,25 @@ func run() (*driver.DB,error) {
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
 	gob.Register(map[string]int{})
+	
+	//read flages
+
+inProduction:=flag.Bool("production",true,"Application is  in production" )
+useCache:=flag.Bool("cache",true,"use template cache")
+dbHost:=flag.String("dbhost","localhost","database host")
+dbName:=flag.String("dbname","","database name")
+dbUser:=flag.String("dbuser","","database user")
+dbPassword:=flag.String("dbpass","","database password")
+dbPort:=flag.String("dbport","5432","database port")
+dbSSL:=flag.String("dbssl","disable","database ssl settings (disable, prefer, require)")
+
+flag.Parse()
+
+if *dbName=="" || *dbUser==""  {
+	fmt.Println("missing required flags")
+	os.Exit(1)
+}
+
 
 	mailchan := make(chan models.MailData)
 	app.MailChan = mailchan
@@ -114,7 +132,10 @@ func run() (*driver.DB,error) {
 
 	//---------------------------------------------------------------------------------------------
 
-	app.InProduction = false
+	app.InProduction = *inProduction
+	app.UseCache = *useCache
+
+
 	infoLog = log.New(os.Stdout, "INFP\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
 
@@ -131,7 +152,10 @@ func run() (*driver.DB,error) {
 	
 	//connection to the database
 	log.Println("connecting to the database...")
-	db, err :=driver.ConnectSQL("host=localhost port=5432 dbname=booking user=postgres password=1234")	
+	
+	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPassword, *dbSSL)
+	
+	db, err :=driver.ConnectSQL(connectionString)	
 	if err !=nil{
 		log.Fatal("can not connect to Dying")
 	}
@@ -147,7 +171,7 @@ tc, err := render.CreateTemplateCache()
 	}
 
 	app.TemplateCache = tc
-	app.UseCache = false
+
 	//---------------------------------------------------------------------------------------------
 
 	repo := handlers.NewRepo(&app,db)
