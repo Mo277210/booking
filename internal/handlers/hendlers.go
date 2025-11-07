@@ -782,6 +782,11 @@ func (m *Respostory) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 }
 
+// AdminPostReservationsCalendar handles post of reservation calendar
+func (m *Respostory) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+log.Println("AdminPostReservationsCalendar called")
+}
+
 // //ممتاز جدًا 🙌
 // أنت الآن داخل مشروع Go (Golang) يستخدم **net/http** و **chi router**، وسؤالك عن `header` في هذا السياق ذكي جدًا 👏
 // خلينا نشرحها بدقة وبأسلوب عملي مع أمثلة من كودك.
