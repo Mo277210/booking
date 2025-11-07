@@ -784,7 +784,21 @@ func (m *Respostory) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 
 // AdminPostReservationsCalendar handles post of reservation calendar
 func (m *Respostory) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
-log.Println("AdminPostReservationsCalendar called")
+err:= r.ParseForm()
+if err!=nil {
+	helpers.ServerError(w,err)
+	return
+}
+ year,_:= strconv.Atoi(r.Form.Get("y"))
+ month,_:= strconv.Atoi(r.Form.Get("m"))
+
+ //process blocks
+
+m.App.Session.Put(r.Context(),"flash","Changes saved successfully")
+http.Redirect(w,r,fmt.Sprintf("/admin/reservations-calendar?y=%d&m=%d",year,month),http.StatusSeeOther)
+
+
+
 }
 
 // //ممتاز جدًا 🙌
