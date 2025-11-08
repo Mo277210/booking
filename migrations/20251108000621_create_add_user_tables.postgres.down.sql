@@ -1,0 +1,1 @@
+delete form users where email = 'admin@admin.com';
